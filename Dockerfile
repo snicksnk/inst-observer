@@ -1,0 +1,14 @@
+FROM node:16.13.2
+
+WORKDIR /app
+RUN npm install -g @nestjs/cli
+# COPY package.json .
+COPY . .
+RUN npm install
+
+# RUN yarn add instagram-private-api
+
+
+RUN cat package.json
+
+CMD ["npm", "run", "start:dev"]

@@ -31,7 +31,7 @@ service:
   port: 5005
 
 # Command to run for main application
-command: ["node", "dist/index.js"]
+command: ["npm", "run", "start:dev"]
 
 # Guaranteed resources at startup
 resources:
@@ -76,3 +76,7 @@ ingress:
   tls:
     - secretName: "${FULL_DOMAIN}"
       hosts: ["${FULL_DOMAIN}"]
+
+migration: false
+
+env:
