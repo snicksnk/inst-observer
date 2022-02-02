@@ -13,7 +13,7 @@ RUN npm install -g @nestjs/cli
 
 COPY . .
 
-RUN enbsubst < .npmrc > .npmrc && cat .npmrc
+RUN envsubst < .npmrc > .npmrc && cat .npmrc
 
 RUN npm install
 
