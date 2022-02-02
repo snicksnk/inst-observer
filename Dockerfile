@@ -12,7 +12,7 @@ RUN npm install -g @nestjs/cli
 
 COPY package.json .npmrc ./
 
-RUN echo "$(envsubst < .npmrc)" > .npmrc && cat .npmrc
+RUN echo "$(envsubst < .npmrc)" > .npmrc && cp .npmrc ~/
 
 RUN npm i
 
