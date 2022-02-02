@@ -14,7 +14,7 @@ COPY package.json .npmrc ./
 
 RUN echo "$(envsubst < .npmrc)" > .npmrc && cat .npmrc
 
-RUN yarn
+RUN npm i
 
 COPY . .
 
