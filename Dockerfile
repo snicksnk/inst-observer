@@ -10,12 +10,10 @@ RUN apt-get install gettext-base -y
 
 RUN npm install -g @nestjs/cli
 
-COPY package.json .npmrc ./
+COPY . .
 
-RUN echo "$(envsubst < .npmrc)" > .npmrc && cp .npmrc ~/
+RUN echo "$(envsubst < .npmrc)" > .npmrc
 
 RUN npm i
-
-COPY . .
 
 CMD ["npm", "run", "start:dev"]
