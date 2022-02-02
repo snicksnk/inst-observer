@@ -1,0 +1,24 @@
+deploy:
+  stage: deploy
+  image: dtzar/helm-kubectl
+  script:
+    - |
+      mkdir -p ~/.kube && printenv "${CI_COMMIT_REF_NAME}"_CONFIG > ~/.kube/config && chmod 600 ~/.kube/config
+      export DOMAIN=$(printenv "${CI_COMMIT_REF_NAME}"_DOMAIN)
+      export FULL_DOMAIN=${CI_PROJECT_NAMESPACE}-${CI_PROJECT_NAME}.${CI_COMMIT_REF_NAME}.${DOMAIN}
+      export TAG=${CI_COMMIT_REF_NAME}-${CI_PIPELINE_IID}
+      printenv "${CI_COMMIT_REF_NAME}"_ENV > ./env
+      set -a && . ./env && set +a
+      sed 's/=/: /' < env | sed -e 's/^/  /' >> .helm/values.yaml
+      echo "$(envsubst < values.yaml)" > values.yaml
+    - helm upgrade -i --atomic --timeout 180s ${CI_PROJECT_NAMESPACE}-${CI_PROJECT_NAME}
+      --set env.APP_ENV=${CI_COMMIT_REF_NAME}
+      -f .helm/values.yaml -n ${CI_COMMIT_REF_NAME} .helm
+  environment:
+    name: ${CI_COMMIT_REF_NAME}
+    url: https://${CI_PROJECT_NAMESPACE}-${CI_PROJECT_NAME}.${CI_COMMIT_REF_NAME}.${develop_DOMAIN}
+  only:
+    - develop
+    - test
+  tags:
+    - build

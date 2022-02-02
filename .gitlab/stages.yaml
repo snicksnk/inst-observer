@@ -1,0 +1,6 @@
+stages:
+  - build
+  - deploy
+  - sonar
+  - build_prod
+  - helm_update

@@ -1,0 +1,6 @@
+include:
+  - '.gitlab/variables.yaml'
+  - '.gitlab/stages.yaml'
+  - '.gitlab/check.yaml'
+  - '.gitlab/build.yaml'
+  - '.gitlab/deploy.yaml'

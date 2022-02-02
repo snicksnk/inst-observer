@@ -1,0 +1,15 @@
+{{- define "hpa.tpl" }}
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ printf "%s-%s" (include "worker" .) .env.name }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ printf "%s-%s" (include "worker" .) .env.name }}
+  minReplicas: {{ .env.hpa_minReplicas }}
+  maxReplicas: {{ .env.hpa_maxReplicas }}
+  targetCPUUtilizationPercentage: {{ .env.hpa_cpuThreshold }}
+---
+{{- end }}

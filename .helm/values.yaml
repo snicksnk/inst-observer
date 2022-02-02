@@ -1,0 +1,78 @@
+replicaCount: 1
+
+image:
+  repository: "${CI_REGISTRY_IMAGE}"
+  pullPolicy: Always
+  tag: "${TAG}"
+
+imagePullSecrets: "registrypullsecret"
+
+DOCKER: "${DOCKER}"
+
+nameOverride: "${CI_PROJECT_NAMESPACE}-${CI_PROJECT_NAME}"
+fullnameOverride: "${CI_PROJECT_NAMESPACE}-${CI_PROJECT_NAME}"
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# Service for main application
+service:
+  type: ClusterIP
+  port: 5005
+
+# Command to run for main application
+command: ["node", "dist/index.js"]
+
+# Guaranteed resources at startup
+resources:
+  limits:
+    memory: 1024Mi
+  requests:
+    cpu: 100m
+    memory: 64Mi
+
+# How many resources allowed for automatic parameters scaling
+vpa:
+  enabled: false
+  minAllowed:
+    cpu: 50m
+    memory: 0Mi
+  maxAllowed:
+    cpu: 1
+    memory: 1024Mi
+
+# How many copies will run if CPU gets load in percentage greater than Threshold
+hpa:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  cpuThreshold: 90
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+ingress:
+  enabled: ${INGRESS}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/proxy-body-size: 10m
+  hosts:
+    - host: "${FULL_DOMAIN}"
+      paths: [/]
+  tls:
+    - secretName: "${FULL_DOMAIN}"
+      hosts: ["${FULL_DOMAIN}"]
