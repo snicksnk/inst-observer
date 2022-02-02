@@ -4,6 +4,8 @@ ARG NPM_TOKEN
 
 WORKDIR /app
 
+RUN apt update
+
 RUN apt-get install gettext-base -y
 
 RUN npm install -g @nestjs/cli
@@ -11,9 +13,7 @@ RUN npm install -g @nestjs/cli
 
 COPY . .
 
-RUN enbsubst < .npmrc > .npmrc
-
-RUN cat .npmrc
+RUN enbsubst < .npmrc > .npmrc && cat .npmrc
 
 RUN npm install
 
