@@ -14,6 +14,8 @@ COPY . .
 
 RUN echo "$(envsubst < .npmrc)" > .npmrc
 
+
+RUN npm install typedi @igpapi/core
 RUN npm i
 
 CMD ["npm", "run", "start:dev"]
