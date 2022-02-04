@@ -10,7 +10,7 @@ deploy:
       printenv "${CI_COMMIT_REF_NAME}"_ENV > ./env
       set -a && . ./env && set +a
       sed 's/=/: /' < env | sed -e 's/^/  /' >> .helm/values.yaml
-      echo "$(envsubst < values.yaml)" > .helm/values.yaml
+      echo "$(envsubst < .helm/values.yaml)" > .helm/values.yaml
     - helm upgrade -i --atomic --timeout 180s ${CI_PROJECT_NAMESPACE}-${CI_PROJECT_NAME}
       -f .helm/values.yaml -n ${CI_COMMIT_REF_NAME} .helm
   environment:
