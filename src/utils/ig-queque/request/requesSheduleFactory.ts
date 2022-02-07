@@ -1,5 +1,5 @@
 import { map, merge, Observable, Subject, tap, zip } from 'rxjs';
-import { Bot, Request } from './types';
+import { Bot, Request } from '../types';
 
 export const requestScheduleFactory = (
   request$: Subject<Request>,

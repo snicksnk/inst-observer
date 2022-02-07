@@ -1,6 +1,6 @@
 import { marbles } from 'rxjs-marbles/jest';
 
-import { botIsReadyFactory } from '../botIsReadyFactory';
+import { botIsReadyFactory } from '../bot/botIsReadyFactory';
 import { FixtureBotsList } from './fixtures';
 
 describe('botIseReadyFactory test', () => {

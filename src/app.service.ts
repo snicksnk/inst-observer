@@ -9,8 +9,8 @@ import {
 } from '@igpapi/android';
 import { Observable, Subject } from 'rxjs';
 import { Bot, Request } from './utils/ig-queque/types';
-import { requestProcessFactory } from './utils/ig-queque/requestProcessFactory';
-import { createRequestFactory } from './utils/ig-queque/createRequestFactory';
+import { requestProcessFactory } from './utils/ig-queque/request/requestProcessFactory';
+import { createRequestFactory } from './utils/ig-queque/request/createRequestFactory';
 import { session } from './data/session';
 import { restoreState } from './utils/ig-requests/restoreState';
 import { getUserStory } from './utils/ig-requests/getStory';
@@ -31,7 +31,6 @@ export class AppService {
   constructor() {
     const processRequest = (request: Request, bot: Bot) =>
       new Promise((res) => {
-        debugger;
         const ig = restoreState(bot.session);
         getUserStory(ig, request.targetUser).then(res);
       });
