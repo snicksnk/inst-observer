@@ -6,7 +6,7 @@ check_build:
     - docker build
       --build-arg BUILDKIT_INLINE_CACHE=1
       --build-arg NPM_TOKEN=${NPM_TOKEN}
-      -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME}-${CI_PIPELINE_IID} .
+      -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}-${CI_PIPELINE_IID} .
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
   tags:
