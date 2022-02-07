@@ -15,7 +15,6 @@ import { FixtureBotsList } from './fixtures';
 //     const freeBot$ = m.hot("       ");
 //     const requestIsBusy$ = m.hot(" ");
 
-
 //     const requestSchedule = requestScheduleFactory(requests$, freeBot$, requestIsBusy$);
 //     // const botIsReady$ = botIsReadyFactory(botIsFree$, botIsSpawned$);
 
@@ -36,10 +35,12 @@ const REQUEST_2 = {
 
 const FREE_BOT_V = {
   id: 'vasya',
+  session: 'session',
 };
 
 const FREE_BOT_P = {
   id: 'vasya',
+  session: 'session',
 };
 
 it('test whaiting for free bot', () => {

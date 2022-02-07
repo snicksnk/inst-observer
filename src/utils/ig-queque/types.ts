@@ -1,5 +1,6 @@
 export interface Bot {
   id: string;
+  session: string;
 }
 
 export interface Request {

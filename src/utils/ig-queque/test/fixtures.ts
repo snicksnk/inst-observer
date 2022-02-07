@@ -3,21 +3,27 @@ import { Bot, Request } from '../types';
 export const FixtureBotsList: Record<string, Bot> = {
   a: {
     id: 'BOT_A',
+    session: 'session',
   },
   b: {
     id: 'BOT_B',
+    session: 'session',
   },
   c: {
     id: 'BOT_C',
+    session: 'session',
   },
   d: {
     id: 'BOT_D',
+    session: 'session',
   },
   e: {
     id: 'BOT_E',
+    session: 'session',
   },
   f: {
     id: 'BOT_F',
+    session: 'session',
   },
 };
 
