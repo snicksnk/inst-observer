@@ -28,7 +28,7 @@ securityContext: {}
 # Service for main application
 service:
   type: ClusterIP
-  port: 5005
+  port: 3000
 
 # Command to run for main application
 command: ["npm", "run", "start:dev"]
