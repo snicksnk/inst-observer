@@ -8,14 +8,13 @@ RUN apt update
 
 RUN apt-get install gettext-base -y
 
-RUN npm install -g @nestjs/cli
-
 COPY . .
 
 RUN echo "$(envsubst < .npmrc)" > .npmrc
 
+RUN npm install -g @nestjs/cli
 
 RUN npm install typedi @igpapi/core
 RUN npm i
 
-CMD ["npm", "run", "start:dev"]
+CMD ["npm", "run", "start"]
