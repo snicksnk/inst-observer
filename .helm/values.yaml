@@ -64,6 +64,8 @@ tolerations: []
 
 affinity: {}
 
+healthchecks: false
+
 ingress:
   enabled: ${INGRESS}
   annotations:
@@ -80,3 +82,4 @@ ingress:
 migration: false
 
 env:
+
