@@ -1,25 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import 'dotenv/config';
-import {
-  AccountLoginCommand,
-  AndroidIgpapi,
-  AndroidState,
-  ReelsMediaFeedResponseItem,
-  UserStoryFeedResponseItemsItem,
-} from '@igpapi/android';
+import { AccountLoginCommand, AndroidIgpapi } from '@igpapi/android';
 import { Observable, Subject } from 'rxjs';
 import { Bot, Request } from './utils/ig-queque/types';
 import { requestProcessFactory } from './utils/ig-queque/request/requestProcessFactory';
 import { createRequestFactory } from './utils/ig-queque/request/createRequestFactory';
-import { session } from './data/session';
 import { restoreState } from './utils/ig-requests/restoreState';
 import { getUserStory } from './utils/ig-requests/getStory';
+import { botSpawnFactory } from './utils/ig-queque/bot/botSpawnFactory';
+import { botCounterFactory } from './utils/ig-queque/bot/botCounterFactory';
 
 @Injectable()
 export class AppService {
   request$: Subject<Request>;
+  // Bots
   freeBot$: Subject<Bot>;
   botIsBusy$: Subject<Bot>;
+  botCounter$: Observable<number>;
+  botNest$: Observable<Bot>;
+  // Request
   requestProcess$: Observable<{
     request: Request;
     bot: Bot;
@@ -45,10 +44,11 @@ export class AppService {
       processRequest,
     );
 
-    // TODO Replace with bot spawner
-    this.freeBot$.next({
-      id: 'Bot_1',
-      session: JSON.stringify(session),
+    this.botCounter$ = botCounterFactory(this.freeBot$, this.botIsBusy$);
+    this.botNest$ = botSpawnFactory(this.botCounter$);
+
+    this.botNest$.subscribe((bot) => {
+      this.freeBot$.next(bot);
     });
   }
 
@@ -58,7 +58,7 @@ export class AppService {
 
   async getBot(auth: { username: string; password: string; proxy: string }) {
     const ig = new AndroidIgpapi();
-    ig.state.device.generate('userId');
+    ig.state.device.generate(auth.username);
 
     ig.state.proxyUrl = auth.proxy;
 

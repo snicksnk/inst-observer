@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Bot } from '../types';
 
-export const botNestFactory = (
+export const botCounterFactory = (
   botIsFree$: Subject<Bot>,
   botIsBusy$: Subject<Bot>,
 ) =>
@@ -13,6 +13,16 @@ export const botNestFactory = (
     botIsBusy$.subscribe(() => {
       botCount$.next(botCount$.getValue() - 1);
     });
+
+    // subsribe.next({
+    //   id: 'Bot_1',
+    //   session: JSON.stringify(session),
+    // });
+
+    // subsribe.next({
+    //   id: 'Bot_1',
+    //   session: JSON.stringify(session2),
+    // });
 
     botCount$.subscribe((count: number) => subsribe.next(count));
   });

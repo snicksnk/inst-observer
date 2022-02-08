@@ -11,7 +11,9 @@ export const requestScheduleFactory = (
       request,
       bot,
     })),
-    tap(({ request, bot }) => console.log('Launch request', request.targetUser, 'with bot', bot.id)),
+    tap(({ request, bot }) =>
+      console.log(`Launch request ${request.targetUser} with bot ${bot.id}`),
+    ),
     tap(({ bot }) => botIsBusy$.next(bot)),
   );
 
