@@ -21,7 +21,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prisma:gen": "npx prisma generate",
     "prisma:format": "npx prisma format",
-    "prisma:migrate": "npx prisma migrate dev --name init"
+    "prisma:migrate": "npx prisma migrate dev --name init",
+    "prisma:push": "npx prisma db push"
   },
   "dependencies": {
     "@igpapi/android": "^3.33.0",
