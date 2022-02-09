@@ -9,3 +9,12 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Bot {
+  id       Int     @id @default(autoincrement())
+  username String  @unique
+  password String
+  hasError Boolean
+  error    String
+  session  Json?
+}

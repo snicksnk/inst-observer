@@ -1,12 +1,18 @@
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { requestScheduleFactory } from './requesSheduleFactory';
 import { Bot, Request } from '../types';
+import { UserStoryFeedResponseItemsItem } from '@igpapi/android';
 
 export const requestProcessFactory = (
   request$: Subject<Request>,
   freeBot$: Subject<Bot>,
   botIsBusy$: Subject<Bot>,
-  taskProcess: (request: Request, bot: Bot) => Promise<any>,
+  botCounter$: Observable<number>,
+  botNest$: Observable<Bot>,
+  taskProcess: (
+    request: Request,
+    bot: Bot,
+  ) => Promise<UserStoryFeedResponseItemsItem[]>,
 ) => {
   request$.subscribe((request) => {
     console.log(`💦 new request ${request.targetUser}`);
@@ -23,5 +29,10 @@ export const requestProcessFactory = (
       freeBot$.next(bot);
     }, 1000);
   });
+
+  botNest$.subscribe((bot) => {
+    freeBot$.next(bot);
+  });
+
   return shedule;
 };

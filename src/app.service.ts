@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import 'dotenv/config';
-import { AccountLoginCommand, AndroidIgpapi } from '@igpapi/android';
+import { AccountLoginCommand, AndroidIgpapi, UserStoryFeedResponseItemsItem } from '@igpapi/android';
 import { Observable, Subject } from 'rxjs';
 import { Bot, Request } from './utils/ig-queque/types';
 import { requestProcessFactory } from './utils/ig-queque/request/requestProcessFactory';
@@ -9,6 +9,7 @@ import { restoreState } from './utils/ig-requests/restoreState';
 import { getUserStory } from './utils/ig-requests/getStory';
 import { botSpawnFactory } from './utils/ig-queque/bot/botSpawnFactory';
 import { botCounterFactory } from './utils/ig-queque/bot/botCounterFactory';
+import { BotService } from './bot.service';
 
 @Injectable()
 export class AppService {
@@ -24,32 +25,31 @@ export class AppService {
     bot: Bot;
   }>;
 
-  // const ig =  restoreState(JSON.stringify(session));
-  // return await getUserStory(ig, targetUser);
-
-  constructor() {
-    const processRequest = (request: Request, bot: Bot) =>
-      new Promise((res) => {
+  constructor(private prisma: BotService) {
+    const processRequest = (
+      request: Request<UserStoryFeedResponseItemsItem[]>,
+      bot: Bot,
+    ) =>
+      new Promise<UserStoryFeedResponseItemsItem[]>(async (res) => {
         const ig = restoreState(bot.session);
-        getUserStory(ig, request.targetUser).then(res);
+        const stories = await getUserStory(ig, request.targetUser);
+        res(stories);
       });
 
     this.request$ = new Subject<Request>();
     this.freeBot$ = new Subject<Bot>();
     this.botIsBusy$ = new Subject<Bot>();
+    this.botCounter$ = botCounterFactory(this.freeBot$, this.botIsBusy$);
+    this.botNest$ = botSpawnFactory(this.botCounter$);
+
     this.requestProcess$ = requestProcessFactory(
       this.request$,
       this.freeBot$,
       this.botIsBusy$,
+      this.botCounter$,
+      this.botNest$,
       processRequest,
     );
-
-    this.botCounter$ = botCounterFactory(this.freeBot$, this.botIsBusy$);
-    this.botNest$ = botSpawnFactory(this.botCounter$);
-
-    this.botNest$.subscribe((bot) => {
-      this.freeBot$.next(bot);
-    });
   }
 
   async getUserStory(targetUser: string) {
