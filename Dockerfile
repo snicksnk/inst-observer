@@ -16,5 +16,5 @@ RUN npm install -g @nestjs/cli
 
 RUN npm install typedi @igpapi/core
 RUN npm i
-
+RUN npm run prisma:push
 CMD ["npm", "run", "start"]

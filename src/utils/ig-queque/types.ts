@@ -3,9 +3,9 @@ export interface Bot {
   session: string;
 }
 
-export interface Request {
+export interface Request<T = any> {
   targetUser: string;
-  resolve: (result: any) => void;
+  resolve: (result: T) => void;
 }
 
 export type createBot = () => Promise<Bot>;
