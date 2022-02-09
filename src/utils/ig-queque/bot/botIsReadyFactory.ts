@@ -1,5 +1,5 @@
 import { merge, Observable, tap } from 'rxjs';
-import { Bot } from './types';
+import { Bot } from '../types';
 
 export const botIsReadyFactory = (
   botIsFree$: Observable<Bot>,

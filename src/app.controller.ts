@@ -15,18 +15,18 @@ export class AppController {
     return await this.appService.getUserStory(targetUser);
   }
 
-  // @Get('auth/session')
-  // @ApiParam({ name: 'targetUser', required: true })
-  // async getSession(@Param('targetUser') targetUser) {
-  //   const ig = await this.appService.getBot({
-  //     username: 'ip_storozhev_yz',
-  //     password: 'ToPvuR9z8H',
-  //     proxy: 'http://Lrp7e3qE:vHcHa6xx@194.226.184.45:64723',
-  //   });
+  @Get('auth/session')
+  @ApiParam({ name: 'targetUser', required: true })
+  async getSession(@Param('targetUser') targetUser) {
+    const ig = await this.appService.getBot({
+      username: 'cacetefake',
+      password: '1312312321i3ij23inn2i1nini213ni',
+      proxy: 'http://Lrp7e3qE:vHcHa6xx@194.226.184.45:64723',
+    });
 
-  //   const state = JSON.stringify(ig.state);
-  //   return state;
-  // }
+    const state = JSON.stringify(ig.state);
+    return state;
+  }
 
   @Get('debug-story/:targetUser')
   @ApiParam({ name: 'targetUser', required: true })

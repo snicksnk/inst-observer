@@ -5,11 +5,12 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
+import { PrismaService } from './prisma.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter()
+    new FastifyAdapter(),
   );
 
   const config = new DocumentBuilder()
@@ -21,7 +22,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  console.log('listen!');
+  const prismaService: PrismaService = app.get(PrismaService);
+  prismaService.enableShutdownHooks(app);
 
   await app.listen('3000', '0.0.0.0');
 }

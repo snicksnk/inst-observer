@@ -28,7 +28,7 @@ services:
     environment:
       - .
     ports:
-      - 5005:5005
+      - 5005:3000
       - 9229:9229
     volumes:
       - ./:/app

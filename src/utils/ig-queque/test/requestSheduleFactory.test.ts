@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import { marbles } from 'rxjs-marbles/jest';
-import { requestScheduleFactory } from '../requesSheduleFactory';
+import { requestScheduleFactory } from '../request/requesSheduleFactory';
 import { Bot, Request } from '../types';
 import { FixtureBotsList } from './fixtures';
 
