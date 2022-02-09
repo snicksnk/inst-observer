@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import 'dotenv/config';
-import { AccountLoginCommand, AndroidIgpapi, UserStoryFeedResponseItemsItem } from '@igpapi/android';
+import {
+  AccountLoginCommand,
+  AndroidIgpapi,
+  UserStoryFeedResponseItemsItem,
+} from '@igpapi/android';
 import { Observable, Subject } from 'rxjs';
 import { Bot, Request } from './utils/ig-queque/types';
 import { requestProcessFactory } from './utils/ig-queque/request/requestProcessFactory';
@@ -25,7 +29,8 @@ export class AppService {
     bot: Bot;
   }>;
 
-  constructor(private prisma: BotService) {
+  constructor(private botService: BotService) {
+    // this.prisma = prisma;
     const processRequest = (
       request: Request<UserStoryFeedResponseItemsItem[]>,
       bot: Bot,
@@ -40,7 +45,7 @@ export class AppService {
     this.freeBot$ = new Subject<Bot>();
     this.botIsBusy$ = new Subject<Bot>();
     this.botCounter$ = botCounterFactory(this.freeBot$, this.botIsBusy$);
-    this.botNest$ = botSpawnFactory(this.botCounter$);
+    this.botNest$ = botSpawnFactory(this.botCounter$, this.getBots.bind(this));
 
     this.requestProcess$ = requestProcessFactory(
       this.request$,
@@ -54,6 +59,14 @@ export class AppService {
 
   async getUserStory(targetUser: string) {
     return createRequestFactory(this.request$, targetUser);
+  }
+
+  getBots() {
+    return this.botService.getBots({
+      where: {
+        hasError: false,
+      },
+    });
   }
 
   async getBot(auth: { username: string; password: string; proxy: string }) {

@@ -18,7 +18,10 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "prisma:gen": "npx prisma generate",
+    "prisma:format": "npx prisma format",
+    "prisma:migrate": "npx prisma migrate dev --name init"
   },
   "dependencies": {
     "@igpapi/android": "^3.33.0",
@@ -27,14 +30,16 @@
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/platform-fastify": "^8.2.6",
     "@nestjs/swagger": "^5.2.0",
+    "@prisma/client": "^3.9.1",
     "dotenv": "^16.0.0",
     "fastify-swagger": "^4.13.1",
-    "redis": "^3.1.2",
+    "redis": "^4.0.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.5.2",
     "rxjs-marbles": "^7.0.1",
-    "typedi": "^0.10.0"
+    "typedi": "^0.10.0",
+    "winston": "^3.5.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",
