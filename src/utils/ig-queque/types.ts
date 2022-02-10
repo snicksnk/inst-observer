@@ -5,6 +5,7 @@ export interface Bot {
 
 export interface Request<T = any> {
   targetUser: string;
+  process: (request: Request<T>, bot: Bot) => Promise<T>;
   resolve: (result: T) => void;
 }
 

@@ -36,8 +36,9 @@ describe('Bot nest test', () => {
 
       const requestProcess$ = requestProcessFactory<
         UserStoryFeedResponseItemsItem[]
-      >(request$, freeBot$, botIsBusy$, botCounter$, botNest$, processRequest);
+      >(request$, freeBot$, botIsBusy$, botCounter$, botNest$);
 
+      // TODO write expect
       // m.expect(botNest).toBeObservable(expected);
     }),
   );

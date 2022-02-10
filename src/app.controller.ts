@@ -12,8 +12,18 @@ export class AppController {
 
   @Get('user/:targetUser/story')
   @ApiParam({ name: 'targetUser', required: true })
-  async getHello(@Param('targetUser') targetUser) {
+  async getStoryes(@Param('targetUser') targetUser) {
     const result = await this.appService.getUserStory(targetUser);
+    if (!result) {
+      throw new NotFoundException({ err: 'User not found' });
+    }
+    return result;
+  }
+
+  @Get('user/:targetUser/highlighted')
+  @ApiParam({ name: 'targetUser', required: true })
+  async getHighlighted(@Param('targetUser') targetUser) {
+    const result = await this.appService.getHighligted(targetUser);
     if (!result) {
       throw new NotFoundException({ err: 'User not found' });
     }

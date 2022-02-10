@@ -9,10 +9,10 @@ export const requestProcessFactory = <R = any>(
   botIsBusy$: Subject<Bot>,
   botCounter$: Observable<number>,
   botNest$: Observable<Bot>,
-  taskProcess: (
-    request: Request<R>,
-    bot: Bot,
-  ) => Promise<UserStoryFeedResponseItemsItem[]>,
+  // taskProcess: (
+  //   request: Request<R>,
+  //   bot: Bot,
+  // ) => Promise<UserStoryFeedResponseItemsItem[]>,
 ) => {
   request$.subscribe((request) => {
     console.log(`💦 new request ${request.targetUser}`);
@@ -24,7 +24,7 @@ export const requestProcessFactory = <R = any>(
     .pipe(
       tap(({ request, bot }) => console.log('☄️ Start task', { request, bot })),
       mergeMap(({ request, bot }) =>
-        Promise.all([taskProcess(request, bot), request, bot]),
+        Promise.all([request.process(request, bot), request, bot]),
       ),
       map(([result, request, bot]) => ({ result, request, bot })),
       tap(({ result, request }) => request.resolve(result)),

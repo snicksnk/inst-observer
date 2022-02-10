@@ -10,7 +10,7 @@ import { Bot, Request } from './utils/ig-queque/types';
 import { requestProcessFactory } from './utils/ig-queque/request/requestProcessFactory';
 import { createRequestFactory } from './utils/ig-queque/request/createRequestFactory';
 import { restoreState } from './utils/ig-requests/restoreState';
-import { getUserStory } from './utils/ig-requests/getStory';
+import { getHighlighted, getUserStory } from './utils/ig-requests/getStory';
 import { botSpawnFactory } from './utils/ig-queque/bot/botSpawnFactory';
 import { botCounterFactory } from './utils/ig-queque/bot/botCounterFactory';
 import { BotService } from './bot.service';
@@ -32,15 +32,6 @@ export class AppService {
 
   constructor(private botService: BotService) {
     // this.prisma = prisma;
-    const processRequest = (
-      request: Request<UserStoryFeedResponseItemsItem[]>,
-      bot: Bot,
-    ) =>
-      new Promise<UserStoryFeedResponseItemsItem[]>(async (res) => {
-        const ig = restoreState(bot.session);
-        const stories = await getUserStory(ig, request.targetUser);
-        res(stories);
-      });
 
     this.request$ = new Subject<Request>();
     this.freeBot$ = new Subject<Bot>();
@@ -54,12 +45,39 @@ export class AppService {
       this.botIsBusy$,
       this.botCounter$,
       this.botNest$,
-      processRequest,
+      // processRequest,
     );
   }
 
   async getUserStory(targetUser: string) {
-    return createRequestFactory(this.request$, targetUser);
+    // TODO в отедльный файл
+    const processRequest = (
+      request: Request<UserStoryFeedResponseItemsItem[]>,
+      bot: Bot,
+    ) =>
+      new Promise<UserStoryFeedResponseItemsItem[]>(async (res) => {
+        const ig = restoreState(bot.session);
+        const stories = await getUserStory(ig, request.targetUser);
+        res(stories);
+      });
+
+    return createRequestFactory(this.request$, targetUser, processRequest);
+  }
+
+
+  async getHighligted(targetUser: string) {
+    // TODO в отедльный файл
+    const processRequest = (
+      request: Request<UserStoryFeedResponseItemsItem[]>,
+      bot: Bot,
+    ) =>
+      new Promise<UserStoryFeedResponseItemsItem[]>(async (res) => {
+        const ig = restoreState(bot.session);
+        const stories = await getHighlighted(ig, request.targetUser);
+        res(stories);
+      });
+
+    return createRequestFactory(this.request$, targetUser, processRequest);
   }
 
   getBots() {

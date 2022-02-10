@@ -25,12 +25,14 @@ import { FixtureBotsList } from './fixtures';
 
 const REQUEST_1 = {
   targetUser: 'user1',
-  resolve: () => {},
+  process: () => Promise.resolve('a'),
+  resolve: () => Promise.resolve('a'),
 };
 
 const REQUEST_2 = {
   targetUser: 'user2',
-  resolve: () => {},
+  process: () => Promise.resolve('b'),
+  resolve: () => Promise.resolve('b'),
 };
 
 const FREE_BOT_V = {
