@@ -11,10 +11,10 @@ export const requestScheduleFactory = (
       request,
       bot,
     })),
+    tap(({ bot }) => botIsBusy$.next(bot)),
     tap(({ request, bot }) =>
       console.log(`Launch request ${request.targetUser} with bot ${bot.id}`),
     ),
-    tap(({ bot }) => botIsBusy$.next(bot)),
   );
 
 export const botIsReadyFactory = (

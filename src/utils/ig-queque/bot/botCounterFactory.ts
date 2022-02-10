@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, map, mapTo, merge, Observable, Subject } from 'rxjs';
 import { Bot } from '../types';
 
 export const botCounterFactory = (
@@ -7,11 +7,40 @@ export const botCounterFactory = (
 ) =>
   new Observable<number>((subsribe) => {
     const botCount$ = new BehaviorSubject<number>(0);
-    botIsFree$.subscribe(() => {
-      botCount$.next(botCount$.getValue() + 1);
+
+    botCount$.subscribe((c) => {
+      console.log('count--- ', c);
     });
-    botIsBusy$.subscribe(() => {
-      botCount$.next(botCount$.getValue() - 1);
+
+    const botList$ = new BehaviorSubject<
+      Array<{
+        inc: number;
+        bot: Bot['id'];
+      }>
+    >([]);
+
+    botList$.subscribe((b) => console.log('bot--list', b));
+
+    const freeBots$ = botIsFree$.pipe(
+      map((bot) => ({
+        bot,
+        inc: 1,
+      })),
+    );
+
+    const busyBots$ = botIsBusy$.pipe(
+      map((bot) => ({
+        bot,
+        inc: -1,
+      })),
+    );
+
+    merge(freeBots$, busyBots$).subscribe((val) => {
+      // botList$.next([
+      //   ...botList$.getValue(),
+      //   { bot: val.bot['id'], inc: val.inc },
+      // ]);
+      botCount$.next(botCount$.getValue() + val.inc);
     });
 
     // subsribe.next({

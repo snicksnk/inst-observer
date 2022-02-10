@@ -1,10 +1,22 @@
-import { AndroidIgpapi, UserStoryFeedResponseItemsItem } from '@igpapi/android';
+import {
+  AndroidIgpapi,
+  IgExactUserNotFoundError,
+  UserStoryFeedResponseItemsItem,
+} from '@igpapi/android';
 
 export const getUserStory = async (
   ig: AndroidIgpapi,
   searchAccount: string,
 ): Promise<UserStoryFeedResponseItemsItem[]> => {
-  const targetUser = await ig.user.searchExact(searchAccount); // getting exact user by login
+  let targetUser;
+  try {
+    targetUser = await ig.user.searchExact(searchAccount); // getting exact user by login
+  } catch (e) {
+    if (e instanceof IgExactUserNotFoundError) {
+      return null;
+    }
+    throw e;
+  }
 
   await new Promise((res) => setTimeout(res, 1000));
 

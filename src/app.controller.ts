@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, NotFoundException, Param, Post, Query } from '@nestjs/common';
 import { ApiParam } from '@nestjs/swagger';
 import { AppService } from './app.service';
 import { session } from './data/session';
@@ -13,7 +13,11 @@ export class AppController {
   @Get('user/:targetUser/story')
   @ApiParam({ name: 'targetUser', required: true })
   async getHello(@Param('targetUser') targetUser) {
-    return await this.appService.getUserStory(targetUser);
+    const result = await this.appService.getUserStory(targetUser);
+    if (!result) {
+      throw new NotFoundException({ err: 'User not found' });
+    }
+    return result;
   }
 
   @Get('auth/session')
