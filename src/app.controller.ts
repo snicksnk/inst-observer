@@ -1,7 +1,8 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiParam } from '@nestjs/swagger';
 import { AppService } from './app.service';
 import { session } from './data/session';
+import { CreateBotDto } from './utils/ig-queque/dto/createBotDto';
 import { getUserStory } from './utils/ig-requests/getStory';
 import { restoreState } from './utils/ig-requests/restoreState';
 
@@ -33,5 +34,10 @@ export class AppController {
   async getStory(@Param('targetUser') targetUser) {
     const ig = await restoreState(JSON.stringify(session));
     return await getUserStory(ig, targetUser);
+  }
+
+  @Post('bot')
+  async create(@Body() createBotDto: CreateBotDto) {
+    this.appService.createBot(createBotDto);
   }
 }

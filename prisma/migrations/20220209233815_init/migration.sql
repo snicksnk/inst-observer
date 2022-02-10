@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Bot" ALTER COLUMN "error" DROP NOT NULL;

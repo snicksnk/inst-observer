@@ -14,6 +14,7 @@ import { getUserStory } from './utils/ig-requests/getStory';
 import { botSpawnFactory } from './utils/ig-queque/bot/botSpawnFactory';
 import { botCounterFactory } from './utils/ig-queque/bot/botCounterFactory';
 import { BotService } from './bot.service';
+import { CreateBotDto } from './utils/ig-queque/dto/createBotDto';
 
 @Injectable()
 export class AppService {
@@ -24,10 +25,10 @@ export class AppService {
   botCounter$: Observable<number>;
   botNest$: Observable<Bot>;
   // Request
-  requestProcess$: Observable<{
-    request: Request;
-    bot: Bot;
-  }>;
+  // requestProcess$: Observable<{
+  //   request: Request;
+  //   bot: Bot;
+  // }>;
 
   constructor(private botService: BotService) {
     // this.prisma = prisma;
@@ -47,7 +48,7 @@ export class AppService {
     this.botCounter$ = botCounterFactory(this.freeBot$, this.botIsBusy$);
     this.botNest$ = botSpawnFactory(this.botCounter$, this.getBots.bind(this));
 
-    this.requestProcess$ = requestProcessFactory(
+    requestProcessFactory(
       this.request$,
       this.freeBot$,
       this.botIsBusy$,
@@ -81,5 +82,22 @@ export class AppService {
     });
 
     return ig;
+  }
+
+  async createBot(createBot: CreateBotDto) {
+    let session = createBot.session;
+    if (!session) {
+      const ig = new AndroidIgpapi();
+      ig.state.device.generate(createBot.username);
+      ig.state.proxyUrl = createBot.proxy;
+      await ig.execute(AccountLoginCommand, {
+        username: createBot.username,
+        password: createBot.password,
+      });
+      session = JSON.stringify(ig.state);
+    }
+
+    const bot = await this.botService.createUser({ ...createBot, session });
+    return bot;
   }
 }

@@ -21,4 +21,10 @@ export class BotService {
       orderBy,
     });
   }
+
+  async createUser(data: Prisma.BotCreateInput): Promise<Bot> {
+    return this.prisma.bot.create({
+      data,
+    });
+  }
 }

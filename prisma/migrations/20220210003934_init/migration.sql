@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Bot" ALTER COLUMN "session" SET DATA TYPE TEXT;
