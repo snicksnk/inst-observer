@@ -8,10 +8,6 @@ export const botCounterFactory = (
   new Observable<number>((subsribe) => {
     const botCount$ = new BehaviorSubject<number>(0);
 
-    botCount$.subscribe((c) => {
-      console.log('count--- ', c);
-    });
-
     const botList$ = new BehaviorSubject<
       Array<{
         inc: number;

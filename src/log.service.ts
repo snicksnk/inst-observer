@@ -1,11 +1,16 @@
 import { createClient } from 'redis';
 import { Injectable } from '@nestjs/common';
-import { createLogger, format, Logger, transports } from 'winston';
+import { Bot, Request } from './utils/ig-queque/types';
 
 @Injectable()
 export class LogService {
-  logger: Logger;
+  client: ReturnType<LogService['initRedis']>;
   constructor() {
+    this.client = this.initRedis();
+    this.client.connect();
+  }
+
+  initRedis() {
     const client = createClient({
       url: process.env.REDIS_URL,
     });
@@ -14,18 +19,20 @@ export class LogService {
       console.error('Error ' + err);
     });
 
-    this.logger = createLogger({
-      level: 'info',
-      format: format.json(),
-      defaultMeta: { service: 'user-service' },
-      transports: [
-        //
-        // - Write all logs with importance level of `error` or less to `error.log`
-        // - Write all logs with importance level of `info` or less to `combined.log`
-        // //
-        // new transports.File({ filename: 'error.log', level: 'error' }),
-        // new transports.File({ filename: 'combined.log' }),
-      ],
-    });
+    return client;
+  }
+
+  async logRequest(bot: Bot, request: Request) {
+    this.client.rPush(
+      'requests-log',
+      ['success', request.targetUser, bot.id].join(' '),
+    );
+  }
+
+  async logRequestErr(bot: Bot, request: Request, e: Error) {
+    this.client.rPush(
+      'request-log',
+      ['err', request.targetUser, bot.id, e].join(' '),
+    );
   }
 }

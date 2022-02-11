@@ -13,7 +13,7 @@ export const requestScheduleFactory = (
     })),
     tap(({ bot }) => botIsBusy$.next(bot)),
     tap(({ request, bot }) =>
-      console.log(`Launch request ${request.targetUser} with bot ${bot.id}`),
+      console.log(`☀️ Launch request ${request.targetUser} with bot ${bot.id}`),
     ),
   );
 

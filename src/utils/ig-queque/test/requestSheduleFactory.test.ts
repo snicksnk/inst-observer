@@ -2,7 +2,7 @@ import { Subject } from 'rxjs';
 import { marbles } from 'rxjs-marbles/jest';
 import { requestScheduleFactory } from '../request/requesSheduleFactory';
 import { Bot, Request } from '../types';
-import { FixtureBotsList } from './fixtures';
+import { FixtureBotsList, FixtureRequests } from './fixtures';
 
 // it(
 //   "Test shedue",
@@ -23,17 +23,9 @@ import { FixtureBotsList } from './fixtures';
 //   })
 // );
 
-const REQUEST_1 = {
-  targetUser: 'user1',
-  process: () => Promise.resolve('a'),
-  resolve: () => Promise.resolve('a'),
-};
+const REQUEST_1 = FixtureRequests.a;
 
-const REQUEST_2 = {
-  targetUser: 'user2',
-  process: () => Promise.resolve('b'),
-  resolve: () => Promise.resolve('b'),
-};
+const REQUEST_2 = FixtureRequests.b;
 
 const FREE_BOT_V = {
   id: 'vasya',

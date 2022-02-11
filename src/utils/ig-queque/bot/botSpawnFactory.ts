@@ -10,7 +10,7 @@ export const botSpawnFactory = (
   getBotFromDb: () => Promise<BotModel[]>,
 ) =>
   new Observable<Bot>((subsribe) => {
-    botCounter$.subscribe((count) => console.log('Counter--', count));
+    botCounter$.subscribe((count) => console.log('🌚 Counter--', count));
 
     getBotFromDb().then((botsModels) => {
       from(botsModels).subscribe((botModel) => {

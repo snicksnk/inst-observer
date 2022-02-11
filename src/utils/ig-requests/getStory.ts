@@ -3,6 +3,7 @@ import {
   IgExactUserNotFoundError,
   UserStoryFeedResponseItemsItem,
 } from '@igpapi/android';
+import { from, mergeMap, Observable, of, skip } from 'rxjs';
 
 export const getUserStory = async (
   ig: AndroidIgpapi,
@@ -24,6 +25,15 @@ export const getUserStory = async (
 
   await new Promise((res) => setTimeout(res, 500));
   // Iterate until the end of feed
+
+  // return from(reelsFeed).pipe(
+  //   skip(1),
+  //   mergeMap((realsFeed) => realsFeed),
+  // );
+
+  debugger;
+
+  // return from(reelsFeed);
   const response: UserStoryFeedResponseItemsItem[] = [];
   for await (const { items } of reelsFeed) {
     response.push(...items);

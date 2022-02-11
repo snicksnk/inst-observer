@@ -1,3 +1,5 @@
+import { Observable } from "rxjs";
+
 export interface Bot {
   id: string;
   session: string;
@@ -5,7 +7,7 @@ export interface Bot {
 
 export interface Request<T = any> {
   targetUser: string;
-  process: (request: Request<T>, bot: Bot) => Promise<T>;
+  process: (request: Request<T>, bot: Bot) => Observable<T>;
   resolve: (result: T) => void;
 }
 
