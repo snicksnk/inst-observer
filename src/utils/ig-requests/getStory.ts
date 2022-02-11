@@ -18,11 +18,11 @@ export const getUserStory = async (
     throw e;
   }
 
-  await new Promise((res) => setTimeout(res, 1000));
+  await new Promise((res) => setTimeout(res, 900));
 
   const reelsFeed = ig.feed.userStory({ userId: String(targetUser.pk) });
 
-  await new Promise((res) => setTimeout(res, 1000));
+  await new Promise((res) => setTimeout(res, 500));
   // Iterate until the end of feed
   const response: UserStoryFeedResponseItemsItem[] = [];
   for await (const { items } of reelsFeed) {
