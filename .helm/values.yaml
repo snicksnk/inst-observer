@@ -79,7 +79,7 @@ ingress:
     - secretName: "${FULL_DOMAIN}"
       hosts: ["${FULL_DOMAIN}"]
 
-migration: false
+migration: true
 
 env:
 

@@ -77,6 +77,7 @@ export class AppService {
     });
   }
 
+
   async getBot(auth: { username: string; password: string; proxy: string }) {
     const ig = new AndroidIgpapi();
     ig.state.device.generate(auth.username);
