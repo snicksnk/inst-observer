@@ -4,6 +4,7 @@ import { Request, Bot } from '../types';
 export const createRequestFactory = <Result>(
   request$: Subject<Request<Result>>,
   targetUser: string,
+  params: Record<string, string | number>,
   process: (request: Request<Result>, bot: Bot) => Observable<Result>,
 ) =>
   new Promise<Result>((resolve) => {
@@ -12,5 +13,6 @@ export const createRequestFactory = <Result>(
       startTime: new Date(),
       resolve,
       process,
+      params,
     });
   });

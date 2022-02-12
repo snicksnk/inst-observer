@@ -48,14 +48,20 @@ export class AppService {
     });
   }
 
-  async getUserStory(targetUser: string) {
-    return createRequestFactory(this.request$, targetUser, processRequestStory);
-  }
-
-  async getHighligted(targetUser: string) {
+  async getUserStory(targetUser: string, skip: number) {
     return createRequestFactory(
       this.request$,
       targetUser,
+      { skip },
+      processRequestStory,
+    );
+  }
+
+  async getHighligted(targetUser: string, skip: number) {
+    return createRequestFactory(
+      this.request$,
+      targetUser,
+      { skip },
       processRequestHighlighted,
     );
   }

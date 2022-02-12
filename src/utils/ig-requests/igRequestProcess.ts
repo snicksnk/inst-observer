@@ -11,6 +11,7 @@ export const processRequestFactory =
     requestFunction: (
       ig: AndroidIgpapi,
       targetUser: Request['targetUser'],
+      params: Record<string, string | number>,
     ) => Promise<UserStoryFeedResponseItemsItem[]>,
   ) =>
   (request: Request<UserStoryFeedResponseItemsItem[]>, bot: Bot) =>
@@ -22,7 +23,11 @@ export const processRequestFactory =
       new Promise<UserStoryFeedResponseItemsItem[]>(async (res, rej) => {
         try {
           const ig = restoreState(bot.session);
-          const stories = await requestFunction(ig, request.targetUser);
+          const stories = await requestFunction(
+            ig,
+            request.targetUser,
+            request.params,
+          );
 
           subscribe.next({
             result: stories,

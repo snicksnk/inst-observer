@@ -1,4 +1,12 @@
-import { Body, Controller, Get, NotFoundException, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiParam } from '@nestjs/swagger';
 import { AppService } from './app.service';
 import { session } from './data/session';
@@ -10,20 +18,28 @@ import { restoreState } from './utils/ig-requests/restoreState';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('user/:targetUser/story')
+  @Get('user/:targetUser/story/:skip')
   @ApiParam({ name: 'targetUser', required: true })
-  async getStoryes(@Param('targetUser') targetUser) {
-    const result = await this.appService.getUserStory(targetUser);
+  @ApiParam({ name: 'skip', required: true })
+  async getStoryes(@Param('targetUser') targetUser, @Param('skip') skip) {
+    const result = await this.appService.getUserStory(
+      targetUser,
+      parseInt(skip),
+    );
     if (!result) {
       throw new NotFoundException({ err: 'User not found' });
     }
     return result;
   }
 
-  @Get('user/:targetUser/highlighted')
+  @Get('user/:targetUser/highlighted/:skip')
   @ApiParam({ name: 'targetUser', required: true })
-  async getHighlighted(@Param('targetUser') targetUser) {
-    const result = await this.appService.getHighligted(targetUser);
+  @ApiParam({ name: 'skip', required: true })
+  async getHighlighted(@Param('targetUser') targetUser, @Param('skip') skip) {
+    const result = await this.appService.getHighligted(
+      targetUser,
+      parseInt(skip),
+    );
     if (!result) {
       throw new NotFoundException({ err: 'User not found' });
     }
@@ -47,7 +63,7 @@ export class AppController {
   @ApiParam({ name: 'targetUser', required: true })
   async getStory(@Param('targetUser') targetUser) {
     const ig = await restoreState(JSON.stringify(session));
-    return await getUserStory(ig, targetUser);
+    return await getUserStory(ig, targetUser, {});
   }
 
   @Post('bot')

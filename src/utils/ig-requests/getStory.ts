@@ -3,15 +3,17 @@ import {
   IgExactUserNotFoundError,
   UserStoryFeedResponseItemsItem,
 } from '@igpapi/android';
-import { from, mergeMap, Observable, of, skip } from 'rxjs';
+import CONFIG from 'src/config/common';
 
 export const getUserStory = async (
   ig: AndroidIgpapi,
   searchAccount: string,
+  params: Record<string, string | number>,
 ): Promise<UserStoryFeedResponseItemsItem[]> => {
+  const skip = params?.skip ? Number(params.skip) : 0;
   let targetUser;
   try {
-    targetUser = await ig.user.searchExact(searchAccount); // getting exact user by login
+    targetUser = await ig.user.searchExact(searchAccount);
   } catch (e) {
     if (e instanceof IgExactUserNotFoundError) {
       return null;
@@ -19,33 +21,35 @@ export const getUserStory = async (
     throw e;
   }
 
-  await new Promise((res) => setTimeout(res, 900));
+  await new Promise((res) =>
+    setTimeout(res, CONFIG.requests.pauseAfterGetUser),
+  );
 
   const reelsFeed = ig.feed.userStory({ userId: String(targetUser.pk) });
 
-  await new Promise((res) => setTimeout(res, 500));
-  // Iterate until the end of feed
+  await new Promise((res) =>
+    setTimeout(res, CONFIG.requests.pauseAfterGetStories),
+  );
 
-  // return from(reelsFeed).pipe(
-  //   skip(1),
-  //   mergeMap((realsFeed) => realsFeed),
-  // );
-
-  debugger;
-
-  // return from(reelsFeed);
   const response: UserStoryFeedResponseItemsItem[] = [];
   for await (const { items } of reelsFeed) {
     response.push(...items);
+    if (reelsFeed.hasMore()) {
+      console.log('has moreee');
+      await new Promise((res) =>
+        setTimeout(res, CONFIG.requests.pauseAfterGetStories),
+      );
+    }
   }
-
-  return response;
+  return response.slice(skip);
 };
 
 export const getHighlighted = async (
   ig: AndroidIgpapi,
   searchAccount: string,
+  params: Record<string, string | number>,
 ): Promise<UserStoryFeedResponseItemsItem[]> => {
+  const skip = params?.skip ? Number(params.skip) : 0;
   let targetUser;
   try {
     targetUser = await ig.user.searchExact(searchAccount); // getting exact user by login
@@ -56,7 +60,9 @@ export const getHighlighted = async (
     throw e;
   }
 
-  await new Promise((res) => setTimeout(res, 1000));
+  await new Promise((res) =>
+    setTimeout(res, CONFIG.requests.pauseAfterGetStories),
+  );
 
   const tray = await ig.highlights.highlightsTray(String(targetUser.pk)); // get the highlight covers
   const media = await ig.feed.reelsMedia({
@@ -68,7 +74,13 @@ export const getHighlighted = async (
   const response = [];
   for await (const { items } of media) {
     response.push(...items);
+    if (media.hasMore()) {
+      console.log('has moreee');
+      await new Promise((res) =>
+        setTimeout(res, CONFIG.requests.pauseAfterGetStories),
+      );
+    }
   }
 
-  return response;
+  return response.slice(skip);
 };

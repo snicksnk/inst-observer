@@ -7,6 +7,7 @@ export interface Bot {
 
 export interface Request<T = any> {
   targetUser: string;
+  params?: Record<string, string | number>;
   startTime: Date;
   endTime?: Date;
   duration?: number;
