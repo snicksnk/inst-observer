@@ -14,6 +14,7 @@ import {
   processRequestStory,
 } from './utils/ig-requests/igRequestProcess';
 import { LogService } from './log.service';
+import { IgQuequeError } from './utils/ig-queque/request/error';
 
 @Injectable()
 export class AppService {
@@ -41,9 +42,11 @@ export class AppService {
       // processRequest,
     ).subscribe({
       next: ({ request, bot }) => this.logService.logRequest(bot, request),
-      error: ({ e, request, bot }) => {
-        console.error('Req err', e);
-        this.logService.logRequestErr(bot, request, e);
+      error: (e: IgQuequeError) => {
+        console.error('Req err', e.bot);
+        this.disableBot(e.bot);
+        e.request.resolve(e);
+        this.logService.logRequestErr(e.bot, e.request, e.e);
       },
     });
   }
@@ -103,5 +106,16 @@ export class AppService {
 
     const bot = await this.botService.createUser({ ...createBot, session });
     return bot;
+  }
+
+  async disableBot(bot: Bot) {
+    return this.botService.updateBot({
+      where: {
+        id: Number(bot.id),
+      },
+      data: {
+        hasError: true,
+      },
+    });
   }
 }

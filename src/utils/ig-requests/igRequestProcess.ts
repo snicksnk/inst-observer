@@ -38,7 +38,8 @@ export const processRequestFactory =
           res(stories);
         } catch (e) {
           subscribe.error({ e, request: addEndTimeToRequest(request), bot });
-          rej(e);
+          // TODO fix this
+          res(e);
         }
       });
     });

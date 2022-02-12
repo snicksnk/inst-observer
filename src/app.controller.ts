@@ -68,6 +68,10 @@ export class AppController {
 
   @Post('bot')
   async create(@Body() createBotDto: CreateBotDto) {
-    this.appService.createBot(createBotDto);
+    try {
+      return this.appService.createBot(createBotDto);
+    } catch (e) {
+      return e;
+    }
   }
 }

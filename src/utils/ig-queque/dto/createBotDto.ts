@@ -12,3 +12,9 @@ export class CreateBotDto {
   @ApiProperty()
   session?: string;
 }
+
+
+export class AliveBotDto {
+  @ApiProperty()
+  newPassword: string;
+}
