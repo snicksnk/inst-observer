@@ -9,6 +9,7 @@ export const createRequestFactory = <Result>(
   new Promise<Result>((resolve) => {
     request$.next({
       targetUser,
+      startTime: new Date(),
       resolve,
       process,
     });

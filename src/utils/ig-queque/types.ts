@@ -7,6 +7,9 @@ export interface Bot {
 
 export interface Request<T = any> {
   targetUser: string;
+  startTime: Date;
+  endTime?: Date;
+  duration?: number;
   process: (request: Request<T>, bot: Bot) => Observable<T>;
   resolve: (result: T) => void;
 }

@@ -25,14 +25,41 @@ export class LogService {
   async logRequest(bot: Bot, request: Request) {
     this.client.rPush(
       'requests-log',
-      ['success', request.targetUser, bot.id].join(' '),
+      [
+        'Result: ',
+        ' success',
+        '\nTargetUser:',
+        request.targetUser,
+        '\nBotId:',
+        bot.id,
+        '\nStart time: ',
+        request.startTime,
+        '\nEnd time',
+        request.endTime,
+        '\nDuration: ',
+        request.duration,
+      ].join(' '),
     );
   }
 
   async logRequestErr(bot: Bot, request: Request, e: Error) {
     this.client.rPush(
       'request-log',
-      ['err', request.targetUser, bot.id, e].join(' '),
+      [
+        'Result: ',
+        ' fail',
+        '\nTargetUser:',
+        request.targetUser,
+        '\nBotId:',
+        bot.id,
+        '\nStart time: ',
+        request.startTime,
+        '\nEnd time',
+        request.endTime,
+        '\nDuration: ',
+        request.duration,
+        e,
+      ].join(' '),
     );
   }
 }
