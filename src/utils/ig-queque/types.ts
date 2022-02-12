@@ -11,7 +11,7 @@ export interface Request<T = any> {
   startTime: Date;
   endTime?: Date;
   duration?: number;
-  process: (request: Request<T>, bot: Bot) => Observable<T>;
+  process: (request: Request<T>, bot: Bot) => Promise<T>;
   resolve: (result: T) => void;
 }
 

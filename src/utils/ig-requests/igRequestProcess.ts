@@ -2,6 +2,7 @@ import { AndroidIgpapi, UserStoryFeedResponseItemsItem } from '@igpapi/android';
 
 import { Observable } from 'rxjs';
 import { Request, Bot } from 'src/utils/ig-queque/types';
+import { IgQuequeError } from '../ig-queque/request/error';
 import { addEndTimeToRequest } from '../ig-queque/request/requestUtils';
 import { getHighlighted, getUserStory } from './getStory';
 import { restoreState } from './restoreState';
@@ -15,33 +16,24 @@ export const processRequestFactory =
     ) => Promise<UserStoryFeedResponseItemsItem[]>,
   ) =>
   (request: Request<UserStoryFeedResponseItemsItem[]>, bot: Bot) =>
-    new Observable<{
-      result: UserStoryFeedResponseItemsItem[];
-      request: Request;
-      bot: Bot;
-    }>((subscribe) => {
-      new Promise<UserStoryFeedResponseItemsItem[]>(async (res, rej) => {
-        try {
-          const ig = restoreState(bot.session);
-          const stories = await requestFunction(
-            ig,
-            request.targetUser,
-            request.params,
-          );
+    new Promise(async (res, rej) => {
+      try {
+        const ig = restoreState(bot.session);
+        const stories = await requestFunction(
+          ig,
+          request.targetUser,
+          request.params,
+        );
 
-          subscribe.next({
-            result: stories,
-            request: addEndTimeToRequest(request),
-            bot,
-          });
-          subscribe.complete();
-          res(stories);
-        } catch (e) {
-          subscribe.error({ e, request: addEndTimeToRequest(request), bot });
-          // TODO fix this
-          res(e);
-        }
-      });
+        res({
+          result: stories,
+          request: addEndTimeToRequest(request),
+          bot,
+        });
+      } catch (e) {
+        // TODO fix this
+        rej(new IgQuequeError(e, addEndTimeToRequest(request), bot));
+      }
     });
 
 export const processRequestStory = processRequestFactory(getUserStory);
