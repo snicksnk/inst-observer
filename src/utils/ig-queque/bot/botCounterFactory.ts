@@ -8,12 +8,13 @@ export const botCounterFactory = (
   new Observable<number>((subsribe) => {
     const botCount$ = new BehaviorSubject<number>(0);
 
-    const botList$ = new BehaviorSubject<
-      Array<{
-        inc: number;
-        bot: Bot['id'];
-      }>
-    >([]);
+    const botList$ = new BehaviorSubject<{
+      busy: Array<Bot['id']>;
+      free: Array<Bot['id']>;
+    }>({
+      busy: [],
+      free: [],
+    });
 
     botList$.subscribe((b) => console.log('bot--list', b));
 
@@ -37,6 +38,21 @@ export const botCounterFactory = (
       //   { bot: val.bot['id'], inc: val.inc },
       // ]);
       botCount$.next(botCount$.getValue() + val.inc);
+
+      const curVal = botList$.getValue();
+      if (val.inc > 0) {
+        botList$.next({
+          ...curVal,
+          free: [...curVal.free, val.bot.id],
+          busy: curVal.busy.filter((id) => id !== val.bot.id),
+        });
+      } else {
+        botList$.next({
+          ...curVal,
+          free: curVal.free.filter((id) => id !== val.bot.id),
+          busy: [...curVal.busy, val.bot.id],
+        });
+      }
     });
 
     // subsribe.next({
