@@ -21,4 +21,21 @@ export class BotService {
       orderBy,
     });
   }
+
+  async updateBot(params: {
+    where: Prisma.BotWhereUniqueInput;
+    data: Prisma.BotUpdateInput;
+  }): Promise<Bot> {
+    const { where, data } = params;
+    return this.prisma.bot.update({
+      data,
+      where,
+    });
+  }
+
+  async createUser(data: Prisma.BotCreateInput): Promise<Bot> {
+    return this.prisma.bot.create({
+      data,
+    });
+  }
 }

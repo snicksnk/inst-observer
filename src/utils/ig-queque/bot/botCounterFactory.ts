@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, map, mapTo, merge, Observable, Subject } from 'rxjs';
 import { Bot } from '../types';
 
 export const botCounterFactory = (
@@ -7,11 +7,52 @@ export const botCounterFactory = (
 ) =>
   new Observable<number>((subsribe) => {
     const botCount$ = new BehaviorSubject<number>(0);
-    botIsFree$.subscribe(() => {
-      botCount$.next(botCount$.getValue() + 1);
+
+    const botList$ = new BehaviorSubject<{
+      busy: Array<Bot['id']>;
+      free: Array<Bot['id']>;
+    }>({
+      busy: [],
+      free: [],
     });
-    botIsBusy$.subscribe(() => {
-      botCount$.next(botCount$.getValue() - 1);
+
+    botList$.subscribe((b) => console.log('bot--list', b));
+
+    const freeBots$ = botIsFree$.pipe(
+      map((bot) => ({
+        bot,
+        inc: 1,
+      })),
+    );
+
+    const busyBots$ = botIsBusy$.pipe(
+      map((bot) => ({
+        bot,
+        inc: -1,
+      })),
+    );
+
+    merge(freeBots$, busyBots$).subscribe((val) => {
+      // botList$.next([
+      //   ...botList$.getValue(),
+      //   { bot: val.bot['id'], inc: val.inc },
+      // ]);
+      botCount$.next(botCount$.getValue() + val.inc);
+
+      const curVal = botList$.getValue();
+      if (val.inc > 0) {
+        botList$.next({
+          ...curVal,
+          free: [...curVal.free, val.bot.id],
+          busy: curVal.busy.filter((id) => id !== val.bot.id),
+        });
+      } else {
+        botList$.next({
+          ...curVal,
+          free: curVal.free.filter((id) => id !== val.bot.id),
+          busy: [...curVal.busy, val.bot.id],
+        });
+      }
     });
 
     // subsribe.next({

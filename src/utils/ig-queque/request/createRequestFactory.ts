@@ -1,13 +1,18 @@
-import { Subject } from 'rxjs';
-import { Request } from '../types';
+import { Observable, Subject } from 'rxjs';
+import { Request, Bot } from '../types';
 
-export const createRequestFactory = (
-  request$: Subject<Request>,
+export const createRequestFactory = <Result>(
+  request$: Subject<Request<Result>>,
   targetUser: string,
+  params: Record<string, string | number>,
+  process: (request: Request<Result>, bot: Bot) => Promise<Result>,
 ) =>
-  new Promise((res) => {
+  new Promise<Result>((resolve) => {
     request$.next({
       targetUser,
-      resolve: res,
+      startTime: new Date(),
+      resolve,
+      process,
+      params,
     });
   });

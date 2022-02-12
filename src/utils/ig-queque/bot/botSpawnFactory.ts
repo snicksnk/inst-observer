@@ -1,4 +1,4 @@
-import { from, Observable, of, Subject } from 'rxjs';
+import { from, Observable, of, Subject, tap } from 'rxjs';
 import { Bot } from '../types';
 import { Bot as BotModel } from '@prisma/client';
 
@@ -10,14 +10,13 @@ export const botSpawnFactory = (
   getBotFromDb: () => Promise<BotModel[]>,
 ) =>
   new Observable<Bot>((subsribe) => {
-    botCounter$.subscribe((count) => console.log('Counter--', count));
+    botCounter$.subscribe((count) => console.log('🌚 Counter--', count));
 
     getBotFromDb().then((botsModels) => {
-      console.log('bots---', botsModels);
       from(botsModels).subscribe((botModel) => {
         subsribe.next({
           id: String(botModel.id),
-          session: JSON.stringify(botModel.session),
+          session: botModel.session,
         });
       });
     });

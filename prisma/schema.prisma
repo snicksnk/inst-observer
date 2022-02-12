@@ -14,8 +14,8 @@ model Bot {
   id       Int     @id @default(autoincrement())
   username String  @unique
   password String
-  proxy    String?
+  proxy    String
   hasError Boolean
-  error    String
-  session  Json?
+  error    String?
+  session  String?
 }
