@@ -13,6 +13,7 @@ export interface Request<T = any> {
   duration?: number;
   process: (request: Request<T>, bot: Bot) => Promise<T>;
   resolve: (result: T) => void;
+  reject: (error: Error) => void;
 }
 
 export type createBot = () => Promise<Bot>;

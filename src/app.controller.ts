@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   NotFoundException,
   Param,
@@ -8,6 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiParam } from '@nestjs/swagger';
+import { catchError, take, throwError } from 'rxjs';
 import { AppService } from './app.service';
 import { session } from './data/session';
 import { CreateBotDto } from './utils/ig-queque/dto/createBotDto';
@@ -22,10 +24,13 @@ export class AppController {
   @ApiParam({ name: 'targetUser', required: true })
   @ApiParam({ name: 'skip', required: true })
   async getStoryes(@Param('targetUser') targetUser, @Param('skip') skip) {
-    const result = await this.appService.getUserStory(
-      targetUser,
-      parseInt(skip),
+    const result = (
+      await this.appService.getUserStory(targetUser, parseInt(skip))
+    ).pipe(
+      take(1),
+      catchError((e) => throwError(new ForbiddenException({ e }))),
     );
+
     if (!result) {
       throw new NotFoundException({ err: 'User not found' });
     }
