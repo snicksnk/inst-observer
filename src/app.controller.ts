@@ -41,9 +41,11 @@ export class AppController {
   @ApiParam({ name: 'targetUser', required: true })
   @ApiParam({ name: 'skip', required: true })
   async getHighlighted(@Param('targetUser') targetUser, @Param('skip') skip) {
-    const result = await this.appService.getHighligted(
-      targetUser,
-      parseInt(skip),
+    const result = (
+      await this.appService.getHighligted(targetUser, parseInt(skip))
+    ).pipe(
+      take(1),
+      catchError((e) => throwError(new ForbiddenException({ e }))),
     );
     if (!result) {
       throw new NotFoundException({ err: 'User not found' });
