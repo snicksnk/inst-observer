@@ -4,6 +4,7 @@ import {
   map,
   mergeMap,
   Observable,
+  of,
   Subject,
   tap,
   throwError,
@@ -11,6 +12,7 @@ import {
 } from 'rxjs';
 import { requestScheduleFactory } from './requesSheduleFactory';
 import { Bot, Request } from '../types';
+import { IgQuequeError } from './error';
 
 export const requestProcessFactory = <R = any>(
   request$: Subject<Request<R>>,
@@ -33,17 +35,31 @@ export const requestProcessFactory = <R = any>(
 
   const shedule = requestScheduleFactory(request$, freeBot$, botIsBusy$);
 
-  return shedule.pipe(
+  const pipe = shedule.pipe(
     tap(({ request, bot }) =>
       console.log('☄️ Start task', { request, botId: bot.id }),
     ),
     mergeMap(({ request, bot }) => {
       return request.process(request, bot);
     }),
-    tap(({ result, request }) => request.resolve(result)),
-    delay(3000),
-    tap(({ bot }) => {
-      freeBot$.next(bot);
+    tap(({ result, request, e }) => request.resolve(result || e)),
+    tap((e) => {
+      if (e instanceof IgQuequeError) {
+        e.request.reject(e);
+      }
     }),
+    delay(3000),
+    tap((e) => {
+      if (!(e instanceof IgQuequeError)) {
+        freeBot$.next(e.bot);
+      }
+    }),
+    // catchError((e: IgQuequeError) => {
+    //   console.error('HAndle--errrr');
+    //   e.request.resolve(e);
+    //   return of(e);
+    // }),
   );
+
+  return pipe;
 };

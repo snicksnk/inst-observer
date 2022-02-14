@@ -13,7 +13,6 @@ export class CreateBotDto {
   session?: string;
 }
 
-
 export class AliveBotDto {
   @ApiProperty()
   newPassword: string;

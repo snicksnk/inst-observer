@@ -12,6 +12,7 @@ export const getUserStory = async (
 ): Promise<UserStoryFeedResponseItemsItem[]> => {
   const skip = params?.skip ? Number(params.skip) : 0;
   let targetUser;
+
   try {
     targetUser = await ig.user.searchExact(searchAccount);
   } catch (e) {

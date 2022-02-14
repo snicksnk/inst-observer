@@ -41,12 +41,20 @@ export class AppService {
       this.botNest$,
       // processRequest,
     ).subscribe({
-      next: ({ request, bot }) => this.logService.logRequest(bot, request),
-      error: (e: IgQuequeError) => {
-        console.error('Req err', e.bot);
-        this.disableBot(e.bot);
-        e.request.resolve(e);
-        this.logService.logRequestErr(e.bot, e.request, e.e);
+      next: (result: IgQuequeError | { request: Request; bot: Bot }) => {
+        if (result instanceof IgQuequeError) {
+          const { e, request, bot } = result;
+          console.error('Req err', e);
+          this.disableBot(bot, e);
+          this.logService.logRequestErr(bot, request, e);
+          console.error('eee===', e);
+        } else {
+          const { bot, request } = result;
+          this.logService.logRequest(bot, request);
+        }
+      },
+      error: (e: Error) => {
+        console.error('Uncached error', e);
       },
     });
   }
@@ -77,7 +85,6 @@ export class AppService {
     });
   }
 
-
   async getBot(auth: { username: string; password: string; proxy: string }) {
     const ig = new AndroidIgpapi();
     ig.state.device.generate(auth.username);
@@ -106,16 +113,21 @@ export class AppService {
     }
 
     const bot = await this.botService.createUser({ ...createBot, session });
+    this.freeBot$.next({
+      id: String(bot.id),
+      session: bot.session,
+    });
     return bot;
   }
 
-  async disableBot(bot: Bot) {
+  async disableBot(bot: Bot, e: Error) {
     return this.botService.updateBot({
       where: {
         id: Number(bot.id),
       },
       data: {
         hasError: true,
+        error: `${e}  `,
       },
     });
   }

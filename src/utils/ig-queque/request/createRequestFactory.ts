@@ -1,4 +1,4 @@
-import { Observable, Subject } from 'rxjs';
+import { from, Observable, Subject } from 'rxjs';
 import { Request, Bot } from '../types';
 
 export const createRequestFactory = <Result>(
@@ -7,12 +7,15 @@ export const createRequestFactory = <Result>(
   params: Record<string, string | number>,
   process: (request: Request<Result>, bot: Bot) => Promise<Result>,
 ) =>
-  new Promise<Result>((resolve) => {
-    request$.next({
-      targetUser,
-      startTime: new Date(),
-      resolve,
-      process,
-      params,
-    });
-  });
+  from(
+    new Promise<Result>((resolve, reject) => {
+      request$.next({
+        targetUser,
+        startTime: new Date(),
+        resolve,
+        reject,
+        process,
+        params,
+      });
+    }),
+  );

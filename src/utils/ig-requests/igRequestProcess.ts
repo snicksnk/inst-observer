@@ -32,7 +32,7 @@ export const processRequestFactory =
         });
       } catch (e) {
         // TODO fix this
-        rej(new IgQuequeError(e, addEndTimeToRequest(request), bot));
+        res(new IgQuequeError(e, addEndTimeToRequest(request), bot));
       }
     });
 
