@@ -33,6 +33,7 @@
     "@nestjs/swagger": "^5.2.0",
     "@prisma/client": "^3.9.1",
     "dotenv": "^16.0.0",
+    "elastic-apm-node": "^3.29.0",
     "fastify-swagger": "^4.13.1",
     "redis": "^4.0.3",
     "reflect-metadata": "^0.1.13",
