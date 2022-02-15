@@ -122,20 +122,23 @@ export class AppService {
     return bot;
   }
 
-  async updateBot(botId: number, updateBot: UpdateBotDto) {
-    const botInstance = await this.botService.getBot({ id: Number(botId) });
+  async updateBot(botUsername: string, updateBot: UpdateBotDto) {
+    debugger;
+    const botInstance = await this.botService.getBot({ username: botUsername });
 
     if (!botInstance) {
       throw new Error('not found');
     }
 
     const password = updateBot.newPassword || botInstance.password;
+    const proxy = updateBot.newProxy || botInstance.proxy;
+
     let session = botInstance.session;
 
     if (updateBot.resetSession) {
       const ig = new AndroidIgpapi();
       ig.state.device.generate(botInstance.username);
-      ig.state.proxyUrl = botInstance.proxy;
+      ig.state.proxyUrl = proxy;
       await ig.execute(AccountLoginCommand, {
         username: botInstance.username,
         password: botInstance.password,
@@ -150,6 +153,7 @@ export class AppService {
       data: {
         session,
         password,
+        proxy,
         hasError: false,
         error: null,
       },

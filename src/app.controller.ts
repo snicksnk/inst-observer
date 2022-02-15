@@ -6,7 +6,7 @@ import {
   NotFoundException,
   Param,
   Post,
-  Patch
+  Patch,
 } from '@nestjs/common';
 import { ApiParam } from '@nestjs/swagger';
 import { catchError, take, throwError } from 'rxjs';
@@ -88,11 +88,14 @@ export class AppController {
     }
   }
 
-  @Patch('bot/:botId/restore')
-  @ApiParam({ name: 'botId', required: true })
-  async updateBot(@Param('botId') botId, @Body() updateBot: UpdateBotDto) {
+  @Patch('bot/:username/restore')
+  @ApiParam({ name: 'username', required: true })
+  async updateBot(
+    @Param('username') username,
+    @Body() updateBot: UpdateBotDto,
+  ) {
     try {
-      return this.appService.updateBot(botId, updateBot);
+      return this.appService.updateBot(username, updateBot);
     } catch (e) {
       return e;
     }
