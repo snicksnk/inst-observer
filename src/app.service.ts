@@ -112,7 +112,11 @@ export class AppService {
       session = JSON.stringify(ig.state);
     }
 
-    const bot = await this.botService.createUser({ ...createBot, session });
+    const bot = await this.botService.createUser({
+      ...createBot,
+      session,
+      hasError: false,
+    });
     this.freeBot$.next({
       id: String(bot.id),
       session: bot.session,
