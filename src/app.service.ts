@@ -147,6 +147,8 @@ export class AppService {
       data: {
         session,
         password,
+        hasError: false,
+        error: null,
       },
     });
 
@@ -167,5 +169,26 @@ export class AppService {
         error: `${e}  `,
       },
     });
+  }
+
+  async getBotStatus() {
+    const active = await (
+      await this.botService.getBots({ where: { hasError: true } })
+    ).map((bot) => ({
+      ...bot,
+      session: undefined,
+    }));
+    const disabled = (
+      await this.botService.getBots({
+        where: {
+          hasError: false,
+        },
+      })
+    ).map((bot) => ({
+      ...bot,
+      session: undefined,
+    }));
+
+    return { active, disabled };
   }
 }

@@ -73,6 +73,12 @@ export class AppController {
     return await getUserStory(ig, targetUser, {});
   }
 
+  @Get('bot/status')
+  async getBotStatus() {
+    const status = await this.appService.getBotStatus();
+    return status;
+  }
+
   @Post('bot')
   async createBot(@Body() createBotDto: CreateBotDto) {
     try {
