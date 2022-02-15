@@ -66,22 +66,36 @@ export const getHighlighted = async (
   );
 
   const tray = await ig.highlights.highlightsTray(String(targetUser.pk)); // get the highlight covers
-  const media = await ig.feed.reelsMedia({
-    userIds: tray.tray.map((x) => x.id),
-  });
 
-  await new Promise((res) => setTimeout(res, 1000));
+  const step = CONFIG.requests.higlightStep;
 
   const response = [];
-  for await (const { items } of media) {
-    response.push(...items);
-    if (media.hasMore()) {
-      console.log('has moreee');
-      await new Promise((res) =>
-        setTimeout(res, CONFIG.requests.pauseAfterGetStories),
-      );
+
+  debugger;
+  for (let i = skip; i < tray.tray.length; i += step) {
+    debugger;
+    console.log(
+      'step---',
+      i,
+      tray.tray.slice(i, i + step).map((x) => x.id),
+    );
+    await new Promise((res) => setTimeout(res, 1000));
+    const media = await ig.feed.reelsMedia({
+      userIds: tray.tray.slice(i, i + step).map((x) => x.id),
+    });
+
+    await new Promise((res) => setTimeout(res, 1000));
+
+    for await (const { items } of media) {
+      response.push(...items);
+      if (media.hasMore()) {
+        console.log('has moreee');
+        await new Promise((res) =>
+          setTimeout(res, CONFIG.requests.pauseAfterGetStories),
+        );
+      }
     }
   }
 
-  return response.slice(skip);
+  return response;
 };
