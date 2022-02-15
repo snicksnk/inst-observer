@@ -12,6 +12,8 @@ export class CreateBotDto {
 export class UpdateBotDto {
   @ApiProperty()
   newPassword?: string;
+  @ApiProperty()
+  newProxy?: string;
   @ApiProperty({
     default: false,
   })
