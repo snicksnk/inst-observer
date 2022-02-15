@@ -4,18 +4,18 @@ import { Observable } from 'rxjs';
 import { Request, Bot } from 'src/utils/ig-queque/types';
 import { IgQuequeError } from '../ig-queque/request/error';
 import { addEndTimeToRequest } from '../ig-queque/request/requestUtils';
-import { getHighlighted, getUserStory } from './getStory';
+import { getHighlighted, getHighlightedList, getUserStory } from './getStory';
 import { restoreState } from './restoreState';
 
 export const processRequestFactory =
-  (
+  <T>(
     requestFunction: (
       ig: AndroidIgpapi,
       targetUser: Request['targetUser'],
       params: Record<string, string | number>,
-    ) => Promise<UserStoryFeedResponseItemsItem[]>,
+    ) => Promise<T>,
   ) =>
-  (request: Request<UserStoryFeedResponseItemsItem[]>, bot: Bot) =>
+  (request: Request<T>, bot: Bot) =>
     new Promise(async (res, rej) => {
       try {
         const ig = restoreState(bot.session);
@@ -38,3 +38,4 @@ export const processRequestFactory =
 
 export const processRequestStory = processRequestFactory(getUserStory);
 export const processRequestHighlighted = processRequestFactory(getHighlighted);
+export const processRequestHighlightedList = processRequestFactory(getHighlightedList);

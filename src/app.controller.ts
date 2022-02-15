@@ -37,6 +37,22 @@ export class AppController {
     return result;
   }
 
+  @Get('user/:targetUser/highlighted-list')
+  @ApiParam({ name: 'targetUser', required: true })
+  async getHighlightedList(
+    @Param('targetUser') targetUser,
+    @Param('skip') skip,
+  ) {
+    const result = (await this.appService.getHighligtedList(targetUser)).pipe(
+      take(1),
+      catchError((e) => throwError(new ForbiddenException({ e }))),
+    );
+    if (!result) {
+      throw new NotFoundException({ err: 'User not found' });
+    }
+    return result;
+  }
+
   @Get('user/:targetUser/highlighted/:skip')
   @ApiParam({ name: 'targetUser', required: true })
   @ApiParam({ name: 'skip', required: true })

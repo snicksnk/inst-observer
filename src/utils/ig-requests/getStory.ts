@@ -1,5 +1,6 @@
 import {
   AndroidIgpapi,
+  HighlightsRepositoryHighlightsTrayResponseRootObject,
   IgExactUserNotFoundError,
   UserStoryFeedResponseItemsItem,
 } from '@igpapi/android';
@@ -97,4 +98,28 @@ export const getHighlighted = async (
   }
 
   return response;
+};
+
+export const getHighlightedList = async (
+  ig: AndroidIgpapi,
+  searchAccount: string,
+  params: Record<string, string | number>,
+): Promise<HighlightsRepositoryHighlightsTrayResponseRootObject> => {
+  let targetUser;
+  try {
+    targetUser = await ig.user.searchExact(searchAccount); // getting exact user by login
+  } catch (e) {
+    if (e instanceof IgExactUserNotFoundError) {
+      return null;
+    }
+    throw e;
+  }
+
+  await new Promise((res) =>
+    setTimeout(res, CONFIG.requests.pauseAfterGetStories),
+  );
+
+  const tray = await ig.highlights.highlightsTray(String(targetUser.pk)); // get the highlight covers
+
+  return tray;
 };

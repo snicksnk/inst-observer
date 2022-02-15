@@ -11,6 +11,7 @@ import { BotService } from './bot.service';
 import { CreateBotDto, UpdateBotDto } from './utils/ig-queque/dto/createBotDto';
 import {
   processRequestHighlighted,
+  processRequestHighlightedList,
   processRequestStory,
 } from './utils/ig-requests/igRequestProcess';
 import { LogService } from './log.service';
@@ -74,6 +75,15 @@ export class AppService {
       targetUser,
       { skip },
       processRequestHighlighted,
+    );
+  }
+
+  async getHighligtedList(targetUser: string) {
+    return createRequestFactory(
+      this.request$,
+      targetUser,
+      {},
+      processRequestHighlightedList,
     );
   }
 
