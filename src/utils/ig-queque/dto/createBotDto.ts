@@ -12,4 +12,8 @@ export class CreateBotDto {
 export class UpdateBotDto {
   @ApiProperty()
   newPassword?: string;
+  @ApiProperty({
+    default: false,
+  })
+  resetSession: boolean;
 }

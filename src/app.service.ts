@@ -130,15 +130,18 @@ export class AppService {
     }
 
     const password = updateBot.newPassword || botInstance.password;
+    let session = botInstance.session;
 
-    const ig = new AndroidIgpapi();
-    ig.state.device.generate(botInstance.username);
-    ig.state.proxyUrl = botInstance.proxy;
-    await ig.execute(AccountLoginCommand, {
-      username: botInstance.username,
-      password: botInstance.password,
-    });
-    const session = JSON.stringify(ig.state);
+    if (updateBot.resetSession) {
+      const ig = new AndroidIgpapi();
+      ig.state.device.generate(botInstance.username);
+      ig.state.proxyUrl = botInstance.proxy;
+      await ig.execute(AccountLoginCommand, {
+        username: botInstance.username,
+        password: botInstance.password,
+      });
+      session = JSON.stringify(ig.state);
+    }
 
     const bot = await this.botService.updateBot({
       where: {
