@@ -5,6 +5,15 @@ import { Bot, Prisma } from '@prisma/client';
 @Injectable()
 export class BotService {
   constructor(private prisma: PrismaService) {}
+
+  async getBot(
+    botWhereUniqueInput: Prisma.BotWhereUniqueInput,
+  ): Promise<Bot | null> {
+    return this.prisma.bot.findUnique({
+      where: botWhereUniqueInput,
+    });
+  }
+
   async getBots(params: {
     skip?: number;
     take?: number;

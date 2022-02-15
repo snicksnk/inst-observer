@@ -6,13 +6,13 @@ import {
   NotFoundException,
   Param,
   Post,
-  Query,
+  Patch
 } from '@nestjs/common';
 import { ApiParam } from '@nestjs/swagger';
 import { catchError, take, throwError } from 'rxjs';
 import { AppService } from './app.service';
 import { session } from './data/session';
-import { CreateBotDto } from './utils/ig-queque/dto/createBotDto';
+import { CreateBotDto, UpdateBotDto } from './utils/ig-queque/dto/createBotDto';
 import { getUserStory } from './utils/ig-requests/getStory';
 import { restoreState } from './utils/ig-requests/restoreState';
 
@@ -53,18 +53,18 @@ export class AppController {
     return result;
   }
 
-  @Get('auth/session')
-  @ApiParam({ name: 'targetUser', required: true })
-  async getSession(@Param('targetUser') targetUser) {
-    const ig = await this.appService.getBot({
-      username: 'cacetefake',
-      password: '1312312321i3ij23inn2i1nini213ni',
-      proxy: 'http://Lrp7e3qE:vHcHa6xx@194.226.184.45:64723',
-    });
+  // @Get('auth/session')
+  // @ApiParam({ name: 'targetUser', required: true })
+  // async getSession(@Param('targetUser') targetUser) {
+  //   const ig = await this.appService.getBot({
+  //     username: 'cacetefake',
+  //     password: '1312312321i3ij23inn2i1nini213ni',
+  //     proxy: 'http://Lrp7e3qE:vHcHa6xx@194.226.184.45:64723',
+  //   });
 
-    const state = JSON.stringify(ig.state);
-    return state;
-  }
+  //   const state = JSON.stringify(ig.state);
+  //   return state;
+  // }
 
   @Get('debug-story/:targetUser')
   @ApiParam({ name: 'targetUser', required: true })
@@ -74,9 +74,19 @@ export class AppController {
   }
 
   @Post('bot')
-  async create(@Body() createBotDto: CreateBotDto) {
+  async createBot(@Body() createBotDto: CreateBotDto) {
     try {
       return this.appService.createBot(createBotDto);
+    } catch (e) {
+      return e;
+    }
+  }
+
+  @Patch('bot/:botId/restore')
+  @ApiParam({ name: 'botId', required: true })
+  async updateBot(@Param('botId') botId, @Body() updateBot: UpdateBotDto) {
+    try {
+      return this.appService.updateBot(botId, updateBot);
     } catch (e) {
       return e;
     }

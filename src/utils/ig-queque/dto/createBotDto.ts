@@ -7,13 +7,9 @@ export class CreateBotDto {
   password: string;
   @ApiProperty()
   proxy: string;
-  @ApiProperty()
-  hasError: boolean;
-  @ApiProperty()
-  session?: string;
 }
 
-export class AliveBotDto {
+export class UpdateBotDto {
   @ApiProperty()
-  newPassword: string;
+  newPassword?: string;
 }

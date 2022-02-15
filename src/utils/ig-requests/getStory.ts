@@ -71,7 +71,6 @@ export const getHighlighted = async (
 
   const response = [];
 
-  debugger;
   for (let i = skip; i < tray.tray.length; i += step) {
     debugger;
     console.log(

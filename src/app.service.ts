@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import 'dotenv/config';
 import { AccountLoginCommand, AndroidIgpapi } from '@igpapi/android';
-import { Observable, Subject } from 'rxjs';
+import { NotFoundError, Observable, Subject } from 'rxjs';
 import { Bot, Request } from './utils/ig-queque/types';
 import { requestProcessFactory } from './utils/ig-queque/request/requestProcessFactory';
 import { createRequestFactory } from './utils/ig-queque/request/createRequestFactory';
 import { botSpawnFactory } from './utils/ig-queque/bot/botSpawnFactory';
 import { botCounterFactory } from './utils/ig-queque/bot/botCounterFactory';
 import { BotService } from './bot.service';
-import { CreateBotDto } from './utils/ig-queque/dto/createBotDto';
+import { CreateBotDto, UpdateBotDto } from './utils/ig-queque/dto/createBotDto';
 import {
   processRequestHighlighted,
   processRequestStory,
@@ -100,26 +100,59 @@ export class AppService {
   }
 
   async createBot(createBot: CreateBotDto) {
-    let session = createBot.session;
-    if (!session) {
-      const ig = new AndroidIgpapi();
-      ig.state.device.generate(createBot.username);
-      ig.state.proxyUrl = createBot.proxy;
-      await ig.execute(AccountLoginCommand, {
-        username: createBot.username,
-        password: createBot.password,
-      });
-      session = JSON.stringify(ig.state);
-    }
+    const ig = new AndroidIgpapi();
+    ig.state.device.generate(createBot.username);
+    ig.state.proxyUrl = createBot.proxy;
+    await ig.execute(AccountLoginCommand, {
+      username: createBot.username,
+      password: createBot.password,
+    });
+    const session = JSON.stringify(ig.state);
 
     const bot = await this.botService.createUser({
       ...createBot,
       session,
       hasError: false,
     });
+
     this.freeBot$.next({
       id: String(bot.id),
       session: bot.session,
+    });
+    return bot;
+  }
+
+  async updateBot(botId: number, updateBot: UpdateBotDto) {
+    const botInstance = await this.botService.getBot({ id: Number(botId) });
+
+    if (!botInstance) {
+      throw new Error('not found');
+    }
+
+    const password = updateBot.newPassword || botInstance.password;
+
+    const ig = new AndroidIgpapi();
+    ig.state.device.generate(botInstance.username);
+    ig.state.proxyUrl = botInstance.proxy;
+    await ig.execute(AccountLoginCommand, {
+      username: botInstance.username,
+      password: botInstance.password,
+    });
+    const session = JSON.stringify(ig.state);
+
+    const bot = await this.botService.updateBot({
+      where: {
+        id: botInstance.id,
+      },
+      data: {
+        session,
+        password,
+      },
+    });
+
+    this.freeBot$.next({
+      id: String(botInstance.id),
+      session: botInstance.session,
     });
     return bot;
   }
