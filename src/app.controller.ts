@@ -53,13 +53,10 @@ export class AppController {
     return result;
   }
 
-  @Get('user/:targetUser/highlighted/:skip')
-  @ApiParam({ name: 'targetUser', required: true })
-  @ApiParam({ name: 'skip', required: true })
-  async getHighlighted(@Param('targetUser') targetUser, @Param('skip') skip) {
-    const result = (
-      await this.appService.getHighligted(targetUser, parseInt(skip))
-    ).pipe(
+  @Get('user/highlight/:highlightId')
+  @ApiParam({ name: 'highlightId', required: true })
+  async getHighlighted(@Param('highlightId') highlightId) {
+    const result = (await this.appService.getHighligted(highlightId)).pipe(
       take(1),
       catchError((e) => throwError(new ForbiddenException({ e }))),
     );

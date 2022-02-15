@@ -38,4 +38,5 @@ export const processRequestFactory =
 
 export const processRequestStory = processRequestFactory(getUserStory);
 export const processRequestHighlighted = processRequestFactory(getHighlighted);
-export const processRequestHighlightedList = processRequestFactory(getHighlightedList);
+export const processRequestHighlightedList =
+  processRequestFactory(getHighlightedList);

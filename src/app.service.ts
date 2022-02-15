@@ -69,11 +69,11 @@ export class AppService {
     );
   }
 
-  async getHighligted(targetUser: string, skip: number) {
+  async getHighligted(highlightId: string) {
     return createRequestFactory(
       this.request$,
-      targetUser,
-      { skip },
+      highlightId,
+      {},
       processRequestHighlighted,
     );
   }

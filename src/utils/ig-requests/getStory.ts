@@ -2,6 +2,7 @@ import {
   AndroidIgpapi,
   HighlightsRepositoryHighlightsTrayResponseRootObject,
   IgExactUserNotFoundError,
+  ReelsMediaFeedResponseItem,
   UserStoryFeedResponseItemsItem,
 } from '@igpapi/android';
 import CONFIG from 'src/config/common';
@@ -48,52 +49,21 @@ export const getUserStory = async (
 
 export const getHighlighted = async (
   ig: AndroidIgpapi,
-  searchAccount: string,
+  highlightId: string,
   params: Record<string, string | number>,
-): Promise<UserStoryFeedResponseItemsItem[]> => {
-  const skip = params?.skip ? Number(params.skip) : 0;
-  let targetUser;
-  try {
-    targetUser = await ig.user.searchExact(searchAccount); // getting exact user by login
-  } catch (e) {
-    if (e instanceof IgExactUserNotFoundError) {
-      return null;
-    }
-    throw e;
-  }
+): Promise<ReelsMediaFeedResponseItem[]> => {
+  const media = await ig.feed.reelsMedia({
+    userIds: [highlightId],
+  });
 
-  await new Promise((res) =>
-    setTimeout(res, CONFIG.requests.pauseAfterGetStories),
-  );
-
-  const tray = await ig.highlights.highlightsTray(String(targetUser.pk)); // get the highlight covers
-
-  const step = CONFIG.requests.higlightStep;
-
-  const response = [];
-
-  for (let i = skip; i < tray.tray.length; i += step) {
-    debugger;
-    console.log(
-      'step---',
-      i,
-      tray.tray.slice(i, i + step).map((x) => x.id),
-    );
-    await new Promise((res) => setTimeout(res, 1000));
-    const media = await ig.feed.reelsMedia({
-      userIds: tray.tray.slice(i, i + step).map((x) => x.id),
-    });
-
-    await new Promise((res) => setTimeout(res, 1000));
-
-    for await (const { items } of media) {
-      response.push(...items);
-      if (media.hasMore()) {
-        console.log('has moreee');
-        await new Promise((res) =>
-          setTimeout(res, CONFIG.requests.pauseAfterGetStories),
-        );
-      }
+  await new Promise((res) => setTimeout(res, 1000));
+  const response: ReelsMediaFeedResponseItem[] = [];
+  for await (const { items } of media) {
+    response.push(...items);
+    if (media.hasMore()) {
+      await new Promise((res) =>
+        setTimeout(res, CONFIG.requests.pauseAfterGetStories),
+      );
     }
   }
 
