@@ -2,7 +2,7 @@ const CONFIG = {
   requests: {
     pauseAfterGetUser: 1000,
     pauseAfterGetStories: 1000,
-    higlightStep: 10,
+    higlightStep: 5,
   },
   bot: {
     pauseAfterCompleateTask: 3000,
