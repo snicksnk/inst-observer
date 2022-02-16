@@ -44,6 +44,15 @@ export class LogService {
 
   async logRequestErr(bot: Bot, request: Request, e: Error) {
     this.client.rPush(
+      'bot-erros',
+      JSON.stringify({
+        bot: { ...bot, session: undefined },
+        request,
+        e: `${e}`,
+      }),
+    );
+
+    this.client.rPush(
       'request-log',
       [
         'Result: ',
