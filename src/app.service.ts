@@ -16,6 +16,8 @@ import {
 } from './utils/ig-requests/igRequestProcess';
 import { LogService } from './log.service';
 import { IgQuequeError } from './utils/ig-queque/request/error';
+import { searchUser } from './utils/ig-requests/getStory';
+import { restoreState } from './utils/ig-requests/restoreState';
 
 @Injectable()
 export class AppService {
@@ -145,8 +147,10 @@ export class AppService {
 
     let session = botInstance.session;
 
+    let ig: AndroidIgpapi;
+
     if (updateBot.resetSession) {
-      const ig = new AndroidIgpapi();
+      ig = new AndroidIgpapi();
       ig.state.device.generate(botInstance.username);
       ig.state.proxyUrl = proxy;
       await ig.execute(AccountLoginCommand, {
@@ -154,7 +158,12 @@ export class AppService {
         password: botInstance.password,
       });
       session = JSON.stringify(ig.state);
+    } else {
+      ig = restoreState(botInstance.session);
+      ig.state.proxyUrl = proxy;
     }
+
+    await searchUser(ig, 'instagram', {});
 
     const bot = await this.botService.updateBot({
       where: {
@@ -169,10 +178,12 @@ export class AppService {
       },
     });
 
-    this.freeBot$.next({
-      id: String(botInstance.id),
-      session: botInstance.session,
-    });
+    setTimeout(() => {
+      this.freeBot$.next({
+        id: String(botInstance.id),
+        session: botInstance.session,
+      });
+    }, 1000);
     return bot;
   }
 

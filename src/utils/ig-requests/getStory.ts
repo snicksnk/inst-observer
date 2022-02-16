@@ -3,9 +3,28 @@ import {
   HighlightsRepositoryHighlightsTrayResponseRootObject,
   IgExactUserNotFoundError,
   ReelsMediaFeedResponseItem,
+  UserRepositorySearchResponseUsersItem,
   UserStoryFeedResponseItemsItem,
 } from '@igpapi/android';
 import CONFIG from 'src/config/common';
+
+export const searchUser = async (
+  ig: AndroidIgpapi,
+  searchAccount: string,
+  params: Record<string, string | number>,
+): Promise<UserRepositorySearchResponseUsersItem | null> => {
+  let targetUser;
+
+  try {
+    targetUser = await ig.user.searchExact(searchAccount);
+  } catch (e) {
+    if (e instanceof IgExactUserNotFoundError) {
+      return null;
+    }
+    throw e;
+  }
+  return targetUser;
+};
 
 export const getUserStory = async (
   ig: AndroidIgpapi,
