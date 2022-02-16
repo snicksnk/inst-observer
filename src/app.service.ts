@@ -181,7 +181,7 @@ export class AppService {
     setTimeout(() => {
       this.freeBot$.next({
         id: String(botInstance.id),
-        session: botInstance.session,
+        session: bot.session,
       });
     }, 1000);
     return bot;
