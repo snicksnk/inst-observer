@@ -40,6 +40,7 @@ export const getUserStory = async (
     if (e instanceof IgExactUserNotFoundError) {
       return null;
     }
+    console.error(e);
     throw e;
   }
 
