@@ -19,3 +19,4 @@ model Bot {
   error    String?
   session  String?
 }
+
