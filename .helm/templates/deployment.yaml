@@ -28,7 +28,9 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- if .Values.entrypoint.enabled }}
           command: {{ .Values.command | toJson }}
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -42,7 +44,7 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{ if .Values.healthchecks }}
+          {{- if .Values.healthchecks }}
           livenessProbe:
             httpGet:
               path: /health
@@ -72,7 +74,7 @@ spec:
                 value: startup
             failureThreshold: 30
             periodSeconds: 10
-          {{ end }}
+          {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

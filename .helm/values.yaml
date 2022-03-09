@@ -30,8 +30,10 @@ service:
   type: ClusterIP
   port: 3000
 
-# Command to run for main application
-command: ["npm", "run", "start"]
+# Entrypoint to run for main application
+entrypoint:
+  enabled: false
+  command: ["npm", "run", "start"]
 
 # Guaranteed resources at startup
 resources:
