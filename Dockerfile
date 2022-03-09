@@ -15,5 +15,5 @@ RUN echo "$(envsubst < .npmrc)" > .npmrc
 RUN npm install -g @nestjs/cli
 
 RUN npm install typedi @igpapi/core
-RUN npm i
+RUN yarn
 CMD ["npm", "run", "start"]

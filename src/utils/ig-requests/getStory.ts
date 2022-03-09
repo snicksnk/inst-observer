@@ -6,7 +6,7 @@ import {
   UserRepositorySearchResponseUsersItem,
   UserStoryFeedResponseItemsItem,
 } from '@igpapi/android';
-import CONFIG from 'src/config/common';
+import CONFIG from '../../config/common';
 
 export const searchUser = async (
   ig: AndroidIgpapi,
