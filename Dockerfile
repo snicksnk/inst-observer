@@ -17,3 +17,4 @@ RUN npm install -g @nestjs/cli
 RUN npm install typedi @igpapi/core
 RUN yarn
 CMD ["npm", "run", "start"]
+
