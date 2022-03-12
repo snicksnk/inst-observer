@@ -155,7 +155,7 @@ export class AppService {
       ig.state.proxyUrl = proxy;
       await ig.execute(AccountLoginCommand, {
         username: botInstance.username,
-        password: botInstance.password,
+        password: password,
       });
       session = JSON.stringify(ig.state);
     } else {
