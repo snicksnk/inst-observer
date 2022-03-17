@@ -5,7 +5,7 @@ const CONFIG = {
     higlightStep: 5,
   },
   bot: {
-    pauseAfterCompleateTask: 3000,
+    pauseAfterCompleateTask: 6000,
   },
   logs: {
     recordExpire: 1000,
