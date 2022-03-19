@@ -41,12 +41,14 @@ export const botCounterFactory = (
 
       const curVal = botList$.getValue();
       if (val.inc > 0) {
+        console.log(`🏃 Bot is free ${val.bot.id}`);
         botList$.next({
           ...curVal,
           free: [...curVal.free, val.bot.id],
           busy: curVal.busy.filter((id) => id !== val.bot.id),
         });
       } else {
+        console.log(`👩‍💻 Bot is busy ${val.bot.id}`);
         botList$.next({
           ...curVal,
           free: curVal.free.filter((id) => id !== val.bot.id),

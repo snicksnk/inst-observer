@@ -13,6 +13,7 @@ import {
 import { requestScheduleFactory } from './requesSheduleFactory';
 import { Bot, Request } from '../types';
 import { IgQuequeError } from './error';
+import CONFIG from 'src/config/common';
 
 export const requestProcessFactory = <R = any>(
   request$: Subject<Request<R>>,
@@ -48,7 +49,7 @@ export const requestProcessFactory = <R = any>(
         e.request.reject(e);
       }
     }),
-    delay(3000),
+    delay(CONFIG.bot.pauseAfterCompleateTask),
     tap((e) => {
       if (!(e instanceof IgQuequeError)) {
         freeBot$.next(e.bot);
