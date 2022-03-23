@@ -46,6 +46,7 @@ export const FixtureRequests: Record<string, Request> = [
   const newRequest = {
     [val]: {
       targetUser: 'USER_A',
+      startTime: new Date(),
       resolve: () => Promise.resolve(FixtureRespones[val]),
     },
   };
