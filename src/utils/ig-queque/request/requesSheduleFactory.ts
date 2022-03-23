@@ -5,12 +5,23 @@ export const requestScheduleFactory = (
   request$: Subject<Request>,
   freeBot$: Subject<Bot>,
   botIsBusy$: Subject<Bot>,
+  timeOut = 60000,
 ) => {
   const requestsNoTimeoOut$ = request$.pipe(
     // tap(a => console.log('before filter', a)),
-    filter((req) => req.startTime.getTime() + 60000 > Date.now()),
+    filter((req) => req.startTime.getTime() + timeOut > Date.now()),
     // tap(a => console.log('after filter', a)),
   );
+
+  const requesttimeout$ = request$.pipe(
+    // tap(a => console.log('before filter', a)),
+    filter((req) => req.startTime.getTime() + timeOut < Date.now()),
+    // tap(a => console.log('after filter', a)),
+  );
+
+  requesttimeout$.subscribe((s) => {
+    s.reject(new Error('time out'));
+  });
 
   return zip(requestsNoTimeoOut$, freeBot$).pipe(
     map(([request, bot]) => ({

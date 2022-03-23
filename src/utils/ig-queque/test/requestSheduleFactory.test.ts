@@ -94,3 +94,33 @@ it('test whaiting for request', () => {
     bot: FREE_BOT_V,
   });
 });
+
+it('test whaiting for request', () => {
+  const sheduleProcess = jest.fn();
+
+  const request$ = new Subject<Request>();
+  const freeBot$ = new Subject<Bot>();
+  const botIsBusy$ = new Subject<Bot>();
+
+  const schedule = requestScheduleFactory(request$, freeBot$, botIsBusy$, -1);
+
+  const Resolve = jest.fn();
+  const Reject = jest.fn();
+  const Process = jest.fn();
+  const TIMEOUT_REQ: Request = {
+    targetUser: '1234',
+    params: {},
+    process: Process,
+    startTime: new Date(),
+    resolve: () => Resolve,
+    reject: Reject,
+  };
+
+  schedule.subscribe(sheduleProcess);
+  // freeBot$.next(FREE_BOT_V);
+  request$.next(TIMEOUT_REQ);
+
+  expect(Reject).toBeCalledTimes(1);
+  expect(Resolve).toBeCalledTimes(0);
+  expect(Process).toBeCalledTimes(0);
+});
