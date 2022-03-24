@@ -20,6 +20,7 @@ export const requestScheduleFactory = (
   );
 
   requesttimeout$.subscribe((s) => {
+    console.error('Timeout!---', s);
     s.reject(new Error('time out'));
   });
 
