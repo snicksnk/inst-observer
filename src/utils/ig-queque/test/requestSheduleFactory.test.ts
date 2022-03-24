@@ -46,14 +46,22 @@ it('test whaiting for free bot', () => {
 
   const schedule = requestScheduleFactory(request$, freeBot$, botIsBusy$);
 
+  const reject = jest.fn().mockReturnValue((err) => console.log(err));
+
+  const REQ_WITH_REJ = { ...REQUEST_1, reject };
+
+  // await new Promise((res) => setTimeout(res, 1000));
+
   schedule.subscribe(sheduleProcess);
-  request$.next(REQUEST_1);
+  request$.next(REQ_WITH_REJ);
   request$.next(REQUEST_2);
   freeBot$.next(FREE_BOT_V);
 
+  expect(reject).toBeCalledTimes(0);
+
   expect(sheduleProcess).toBeCalledTimes(1);
   expect(sheduleProcess).toBeCalledWith({
-    request: REQUEST_1,
+    request: REQ_WITH_REJ,
     bot: FREE_BOT_V,
   });
 
@@ -124,3 +132,33 @@ it('test whaiting for request', () => {
   expect(Resolve).toBeCalledTimes(0);
   expect(Process).toBeCalledTimes(0);
 });
+
+// it('test whaiting for request success', () => {
+//   const sheduleProcess = jest.fn();
+
+//   const request$ = new Subject<Request>();
+//   const freeBot$ = new Subject<Bot>();
+//   const botIsBusy$ = new Subject<Bot>();
+
+//   const schedule = requestScheduleFactory(request$, freeBot$, botIsBusy$, 100);
+
+//   const Resolve = jest.fn();
+//   const Reject = jest.fn();
+//   const Process = jest.fn().mockReturnValue(() => Promise.resolve('res'));
+//   const TIMEOUT_REQ: Request = {
+//     targetUser: '1234',
+//     params: {},
+//     process: Process,
+//     startTime: new Date(),
+//     resolve: Resolve,
+//     reject: Reject,
+//   };
+
+//   schedule.subscribe(sheduleProcess);
+//   freeBot$.next(FREE_BOT_V);
+//   request$.next(TIMEOUT_REQ);
+
+//   expect(Reject).toBeCalledTimes(0);
+//   expect(Process).toBeCalledTimes(1);
+//   expect(Resolve).toBeCalledTimes(1);
+// });
